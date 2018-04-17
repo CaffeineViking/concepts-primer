@@ -1,0 +1,74 @@
+\documentclass[a4paper, twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex, hidelinks,
+            pdftitle={A C++ Concepts Primer},
+            pdfauthor={Erik Sven Vasconcelos Jansson},
+            pdfsubject={Programming Languages - C++},
+            pdfkeywords={c++, concepts}]{hyperref}
+
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{booktabs}
+\usepackage{mathtools}
+\usepackage{blindtext}
+\usepackage{pgfornament}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{courier}
+\usepackage{acronym}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{siunitx}
+\usepackage{relsize}
+\usepackage{algorithm}
+\usepackage[capitalize, noabbrev]{cleveref}
+\usepackage[activate={true, nocompatibility}, final,
+            tracking=true, kerning=true, spacing=true,
+            factor=1100, stretch=10, shrink=10]{microtype}
+
+\newcommand\Cpp{C\nolinebreak[4]\hspace{.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
+\DeclareCaptionFormat{modifiedlst}{\rule{\linewidth}{0.85pt}\\[-2.9pt]#1#2#3}
+\captionsetup[lstlisting]{format =  modifiedlst,
+labelfont=bf,singlelinecheck=off,labelsep=space}
+\lstset{basicstyle=\footnotesize\ttfamily,
+        breakatwhitespace = false,
+        breaklines = true,
+        keepspaces = true,
+        language = C++,
+        showspaces = false,
+        showstringspaces = false,
+        frame = tb,
+        numbers = left,
+        numbersep = 5pt,
+        xleftmargin = 16pt,
+        framexleftmargin = 16pt,
+        belowskip = \bigskipamount,
+        aboveskip = \bigskipamount,
+        escapeinside = {<@}{@>},
+        morekeywords = {
+            concept,
+            requires,
+            constexpr
+        }}
+
+\title{\vspace{-1.5em}\textbf{\Cpp\ Concepts Primer:}\\
+       \large{\emph{``defining and applying constraints''}}}
+\author{{\textbf{Erik Sven Vasconcelos Jansson}} \\
+        {\href{mailto:erik.s.v.jansson@tum.de}
+        {\texttt{<erik.s.v.jansson@tum.de>}}} \\
+        {at Technische Universität München}}
+
+\begin{document}
+
+    \maketitle\begin{abstract}
+    \end{abstract}
+
+    \nocite{*} % TODO: remove?
+    \bibliographystyle{abbrv}
+    \bibliography{primer}
+    \appendix
+
+\end{document}
