@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{courier}
+\usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{mathtools}
@@ -19,9 +20,7 @@
 \author{\vspace{2ex}\\
         \textbf{Erik Sven Vasconcelos Jansson}\\
         {\href{mailto:erik.s.v.jansson@tum.de}
-        {\texttt{<erik.s.v.jansson@tum.de>}}} \\~\\
-        {Department of Informatics (IN), at the}\\
-        {Technical University of Munich (TUM)}}
+        {\texttt{<erik.s.v.jansson@tum.de>}}}}
 
 \DeclareCaptionFormat{modifiedlst}{\rule{\linewidth}{0.85pt}\\[-2.9pt]#1#2#3}
 \captionsetup[lstlisting]{format =  modifiedlst,
@@ -46,6 +45,16 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             requires,
             constexpr
         }}
+
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\endbeamer@frameslide}{\ifx\beamer@frametitle\@empty}{\iffalse}{}{\errmessage{failed to patch}}
+\makeatother
+
+\addtobeamertemplate{frametitle}{}{%
+\begin{tikzpicture}[remember picture,overlay]
+\node[anchor=north east,yshift=-6pt,xshift=-6pt] at (current page.north east) {\includegraphics[height=0.8cm]{figures/tulogo}};
+\end{tikzpicture}}
 
 \setbeamerfont{bibliography item}{size=\tiny}
 \setbeamerfont{bibliography entry author}{size=\tiny}
