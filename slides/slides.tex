@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{courier}
 \usepackage{tikz}
+\usepackage{soul}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{mathtools}
@@ -15,8 +16,8 @@
 
 \usefonttheme[onlymath]{serif}
 \beamertemplatenavigationsymbolsempty
-\title{\LARGE{A Primer on the C\texttt{++} Concepts Extension}\\
-       \large{or: how to make your life easier by constraining templates}}
+\title{\Large{\textbf{A C\texttt{++} Concepts Primer:}}\\
+       \large{\emph{defining and applying constraints}}}
 \author{\vspace{2ex}\\
         \textbf{Erik Sven Vasconcelos Jansson}\\
         {\href{mailto:erik.s.v.jansson@tum.de}
@@ -43,8 +44,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         escapeinside={<@}{@>},
         morekeywords = {
             concept,
-            requires,
-            constexpr
+            requires
         }}
 
 \usepackage{etoolbox}
@@ -63,14 +63,33 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 \setbeamerfont{bibliography entry location}{size=\tiny}
 \setbeamerfont{bibliography entry note}{size=\tiny}
 \setbeamertemplate{footline}[frame number]
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
 \begin{document}
     \frame{\titlepage}
+    \begin{frame}{Presentation Outline}
+        \begin{enumerate}
+            \item Generic programming in C\texttt{++} \begin{itemize}
+                \item{\underline{unconstrained} templates}
+            \end{itemize}
+            \item Problems and some solutions \begin{itemize}
+                \item{read the documentation,}
+                \item{type traits plus SFINAE,}
+                \item{... arcane ``magic'' code.}
+            \end{itemize}
+            \item Concepts lite and its benefits \begin{itemize}
+                \item{\underline{\textcolor{red}{\st{un}}constrained} templates}
+            \end{itemize}
+        \end{enumerate}
+    \end{frame}
 
-
-
-    \frame{\frametitle{Bibliography}
+    \frame{\frametitle{Questions?}}
+    \begin{frame}{References}
         \nocite{*}
         \bibliographystyle{alpha}
         \bibliography{slides}
-    }
+    \end{frame}
 \end{document}

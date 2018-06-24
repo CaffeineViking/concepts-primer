@@ -50,8 +50,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
         escapeinside = {<@}{@>},
         morekeywords = {
             concept,
-            requires,
-            constexpr
+            requires
         }}
 
 \title{\vspace{-1.5em}\textbf{\Cpp\ Concepts Primer:}\\
@@ -64,12 +63,16 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 \begin{document}
 
     \maketitle \begin{abstract}
-    \end{abstract}
-    \tableofcontents \newpage
+    \end{abstract} \tableofcontents
+
+    \mbox{} \\ \noindent \textbf{Notice:} the author is neither an expert or a member of the standardization committee; only a fool would take everything that is written here as the canonical source for \Cpp\ concepts. However, I've tried to keep everything as factually correct as possible; at least according to my knowledge. But if you find anything that's not right, please do contact me and I'll fix it. \newpage
+
+    \section{Introduction} \label{sec:introduction}
 
     \nocite{*} % TODO: remove
-    \bibliographystyle{abbrv}
+    \bibliographystyle{alpha}
     \bibliography{primer}
+    \clearpage \onecolumn
     \appendix
 
 \end{document}
