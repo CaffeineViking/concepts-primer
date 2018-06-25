@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{algorithmic}
 \usepackage{algorithm}
+\usepackage{booktabs}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{courier}
@@ -9,6 +10,7 @@
 \usepackage{soul}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{makecell}
 \usepackage{mathtools}
 \usepackage[font={small},
             labelfont={color=black}]{caption}
@@ -16,6 +18,7 @@
 
 \usefonttheme[onlymath]{serif}
 \beamertemplatenavigationsymbolsempty
+\setbeamertemplate{caption}[numbered]
 \title{\Large{\textbf{A C\texttt{++} Concepts Primer:}}\\
        \large{\emph{defining and applying constraints}}}
 \author{\vspace{2ex}\\
@@ -24,9 +27,6 @@
         {\texttt{<erik.s.v.jansson@tum.de>}}} \\
         {at Technical University of Munich}}
 
-\DeclareCaptionFormat{modifiedlst}{\rule{\linewidth}{0.85pt}\\[-2.9pt]#1#2#3}
-\captionsetup[lstlisting]{format =  modifiedlst,
-labelfont=bf,singlelinecheck=off,labelsep=space}
 \lstset{basicstyle=\footnotesize\ttfamily,
         breakatwhitespace = false,
         breaklines = true,
@@ -62,6 +62,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 \setbeamerfont{bibliography entry title}{size=\tiny}
 \setbeamerfont{bibliography entry location}{size=\tiny}
 \setbeamerfont{bibliography entry note}{size=\tiny}
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 \setbeamertemplate{footline}[frame number]
 
 \makeatletter
@@ -71,19 +72,69 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 \begin{document}
     \frame{\titlepage}
     \begin{frame}{Presentation Outline}
-        \begin{enumerate}
-            \item Generic programming in C\texttt{++} \begin{itemize}
-                \item{\underline{unconstrained} templates}
-            \end{itemize}
-            \item Problems and some solutions \begin{itemize}
-                \item{read the documentation,}
-                \item{type traits plus SFINAE,}
-                \item{... arcane ``magic'' code.}
-            \end{itemize}
-            \item Concepts lite and its benefits \begin{itemize}
-                \item{\underline{\textcolor{red}{\st{un}}constrained} templates}
-            \end{itemize}
-        \end{enumerate}
+        \begin{columns}
+        \column{0.52\textwidth}
+            \begin{enumerate}
+                \item Generic programming in C\texttt{++} \begin{itemize}
+                    \item{\underline{unconstrained} templates.}
+                \end{itemize}
+                \item Problems and some solutions \begin{itemize}
+                    \item{read the documentation,}
+                    \item{type traits plus SFINAE,}
+                    \item{... arcane ``magic'' code.}
+                \end{itemize}
+                \item How \textbf{Concepts Lite} improve \begin{itemize}
+                    \item{\textcolor{red}{\st{un}}\underline{constrained} templates.}
+                \end{itemize}
+            \end{enumerate}
+        \column{0.48\textwidth}
+            \begin{enumerate}
+                \setcounter{enumi}{3}
+                \item \textbf{Applying} type \underline{constraints} \begin{itemize}
+                    \item the \texttt{requires} clauses.
+                \end{itemize}
+                \item How to \textbf{define} \underline{constraints} \begin{itemize}
+                    \item \texttt{requires} expressions.
+                \end{itemize}
+                \item \emph{Natural} or \emph{in-place} syntax?
+                \item Ranges \& Concepts library
+                \item Summary, post-Rapperswil
+            \end{enumerate}
+        \end{columns}
+    \end{frame}
+
+    \begin{frame}{...}
+        \begin{center}
+        \begin{table}
+        \begin{tabular}{ccc}
+            \toprule
+            \bf{Expression} & \bf{Return Value is} & \bf{Requirements Specification} \\
+            \midrule
+            \texttt{x == y} & \texttt{bool} convertible & \makecell[l]{\texttt{==}\, is an equivalence relation,\\
+                                                                       that is, satisfies the following:\\
+                                                                       $\rightarrow$ for all \texttt{x}, \texttt{x == x} is satis.,\\
+                                                                       $\rightarrow$ if \texttt{x == y}, then \texttt{y == x},\\
+                                                                       $\rightarrow$ if \texttt{x == y}, and\; \texttt{y == z},\\
+                                                                       \;\;\;\, then \texttt{x == z}, follows too.
+                                                                       } \\
+            \bottomrule
+        \end{tabular}
+        \caption{\texttt{EqualityComparable} requirements from the C\texttt{++} standard.}
+        \end{table}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{...}
+        \begin{center}
+        \begin{lstlisting}[caption={\texttt{EqualityComparable} concept which ``satisfies''\footnote{not really; see the Ranges TS, this is \texttt{WeaklyEqualityComparable} \texttt{:)}} Table 1}.]
+template<typename T, typename U>
+concept EqualityComparable = requires(T x, U y) {
+    { x == y } -> bool;
+    { x != y } -> bool;
+    { y != x } -> bool;
+    { y == x } -> bool;
+}; \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \frame{\frametitle{Questions?}}
