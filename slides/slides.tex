@@ -44,7 +44,9 @@
         escapeinside={<@}{@>},
         morekeywords = {
             concept,
-            requires
+            requires,
+            point2,
+            T, U, V
         }}
 
 \usepackage{etoolbox}
@@ -71,7 +73,7 @@
 
 \begin{document}
     \frame{\titlepage}
-    \begin{frame}{Presentation Outline}
+    \begin{frame}[fragile]{Presentation Outline}
         \begin{columns}
         \column{0.52\textwidth}
             \begin{enumerate}
@@ -113,6 +115,95 @@
         \end{columns}
     \end{frame}
 
+    \begin{frame}[fragile]{Generic Programming}
+        ...
+    \end{frame}
+
+    \begin{frame}[fragile]{}
+        \framesubtitle{Generic Programming}
+        \begin{center}
+        \begin{lstlisting}[caption={a ``mysterious'' function; can you figure out what this code is?}]
+double f(const double* p,
+         const double* const q) {
+    double x {  };
+    const double s = q - p;
+    while (p != q)
+        x += *p++;
+    return x / s;
+} \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{}
+        \framesubtitle{Generic Programming}
+        \begin{center}
+        \begin{lstlisting}[caption={boilerplate for the next example; a very incomplete point class.}]
+struct point2 {
+    double x, y;
+    point2& operator+=(const point2& p);
+};
+
+point2& point2::operator+=(const point2& p) {
+    x += p.x;
+    y += p.y;
+    return *this;
+}
+
+point2 operator/(const point2& p, double s) {
+    return { p.x / s, p.y / s };
+} \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{}
+        \framesubtitle{Generic Programming}
+        \begin{center}
+        \begin{lstlisting}[caption={another mysterious, yet strangely familiar function (déjà vu?).}]
+point2 f(const point2* p,
+         const point2* const q) {
+    point2 x {  };
+    const double s = q - p;
+    while (p != q)
+        x += *p++;
+    return x / s;
+} \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{}
+        \framesubtitle{Generic Programming}
+        \begin{center}
+            \begin{lstlisting}[caption={natural generalization of the function from the previous slides.}]
+template<typename T>
+T mean(const T* begin,
+       const T* const end) {
+    T sum {  };
+    const double size = end - begin;
+    while (begin != end)
+        sum += *begin++;
+    return sum / size;
+} \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{}
+        \framesubtitle{Generic Programming}
+        \begin{center}
+        \begin{lstlisting}
+template<typename T> requires DefaultConstructible<T>
+                              && SummableWith<T,T> &&
+                              ScalableWith<T, double>
+T mean(const T* begin,
+       const T* const end) {
+    T sum {  };
+    const double size = end - begin;
+    while (begin != end)
+        sum += *begin++;
+    return sum / size;
+} \end{lstlisting}
+        \end{center}
+    \end{frame}
+
     \begin{frame}{...}
         \begin{center}
         \begin{table}
@@ -145,6 +236,9 @@ concept EqualityComparable = requires(T x, U y) {
     { y == x } -> bool;
 }; \end{lstlisting}
         \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{\textbf{Concepts Lite}}
     \end{frame}
 
     \frame{\frametitle{Questions?}}
