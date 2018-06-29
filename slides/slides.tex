@@ -116,7 +116,6 @@
     \end{frame}
 
     \begin{frame}[fragile]{Generic Programming}
-        ...
     \end{frame}
 
     \begin{frame}[fragile]{}
@@ -189,7 +188,7 @@ T mean(const T* begin,
     \begin{frame}[fragile]{}
         \framesubtitle{Generic Programming}
         \begin{center}
-        \begin{lstlisting}
+        \begin{lstlisting}[caption={constraining the function template using a \texttt{requires} clause.}]
 template<typename T> requires DefaultConstructible<T>
                               && SummableWith<T,T> &&
                               ScalableWith<T, double>
@@ -204,7 +203,7 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
-    \begin{frame}{...}
+    \begin{frame}{}
         \begin{center}
         \begin{table}
         \begin{tabular}{ccc}
@@ -225,7 +224,7 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{...}
+    \begin{frame}[fragile]{}
         \begin{center}
         \begin{lstlisting}[caption={\texttt{EqualityComparable} concept which ``satisfies''\footnote{not really; see the Ranges TS, this is \texttt{WeaklyEqualityComparable} \texttt{:)}} Table 1}.]
 template<typename T, typename U>
@@ -236,9 +235,6 @@ concept EqualityComparable = requires(T x, U y) {
     { y == x } -> bool;
 }; \end{lstlisting}
         \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]{\textbf{Concepts Lite}}
     \end{frame}
 
     \frame{\frametitle{Questions?}}
