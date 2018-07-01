@@ -45,9 +45,25 @@
         morekeywords = {
             concept,
             requires,
+            T, U, V,
             point2,
-            T, U, V
+            vector,
         }}
+
+\let\svthefootnote\thefootnote
+\textheight 1in
+\newcommand\blankfootnote[1]{%
+  \let\thefootnote\relax\footnotetext{#1}%
+  \let\thefootnote\svthefootnote%
+}
+\let\svfootnote\footnote
+\renewcommand\footnote[2][?]{%
+  \if\relax#1\relax%
+    \blankfootnote{#2}%
+  \else%
+    \if?#1\svfootnote{#2}\else\svfootnote[#1]{#2}\fi%
+  \fi
+}
 
 \usepackage{etoolbox}
 \makeatletter
@@ -118,7 +134,7 @@
     \begin{frame}[fragile]{Generic Programming}
     \end{frame}
 
-    \begin{frame}[fragile]{}
+    \begin{frame}[fragile]{Regular Programming}
         \framesubtitle{Generic Programming}
         \begin{center}
         \begin{lstlisting}[caption={a ``mysterious'' function; can you figure out what this code is?}]
@@ -133,7 +149,7 @@ double f(const double* p,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{}
+    \begin{frame}[fragile]{Operator Overloading}
         \framesubtitle{Generic Programming}
         \begin{center}
         \begin{lstlisting}[caption={boilerplate for the next example; a very incomplete point class.}]
@@ -143,8 +159,7 @@ struct point2 {
 };
 
 point2& point2::operator+=(const point2& p) {
-    x += p.x;
-    y += p.y;
+    x += p.x; y += p.y;
     return *this;
 }
 
@@ -169,7 +184,7 @@ point2 f(const point2* p,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{}
+    \begin{frame}[fragile]{Generalization}
         \framesubtitle{Generic Programming}
         \begin{center}
             \begin{lstlisting}[caption={natural generalization of the function from the previous slides.}]
@@ -203,7 +218,11 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
-    \begin{frame}{}
+    \begin{frame}[fragile]{Problems and Solutions}
+    \end{frame}
+
+    \begin{frame}[fragile]{Read the Specification}
+        \framesubtitle{Problems and Solutions}
         \begin{center}
         \begin{table}
         \begin{tabular}{ccc}
@@ -224,9 +243,63 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{}
+    \begin{frame}[fragile]{Type Traits and SFINAE}
+        \framesubtitle{Problems and Solutions}
         \begin{center}
-        \begin{lstlisting}[caption={\texttt{EqualityComparable} concept which ``satisfies''\footnote{not really; see the Ranges TS, this is \texttt{WeaklyEqualityComparable} \texttt{:)}} Table 1}.]
+        \begin{lstlisting}[caption={expressing \texttt{EqualityComparable} as a SFINAE type trait.}]
+template<typename T, typename U, typename = void>
+struct is_equality_comparable : std::false_type {  };
+
+template<typename T, typename U>
+struct is_equality_comparable<T, U,
+    typename std::enable_if<true,
+    decltype(std::declval<T&>() == std::declval<U&>()
+             ,(void)0)>::type> : std::true_type {  };\end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Overloading by SFINAE?}
+        \framesubtitle{Problems and Solutions}
+        \begin{center}
+        \begin{lstlisting}[caption={overloading the constructor by using SFINAE \& type traits...}]
+struct Factory {
+    enum { INTEGRAL, FLOATING } m_type;
+
+    template<typename T,
+             typename = std::enable_if<
+             std::is_integral_v<T>>
+    Factory(T) : m_type { INTEGRAL } {}
+    template<typename T,
+             typename = std::enable_if<
+             std::is_floating_point_v<T>>
+    Factory(T) : m_type { FLOATING } {}
+}; \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Overloading by SFINAE}
+        \framesubtitle{Problems and Solutions}
+        \begin{center}
+        \begin{lstlisting}[caption={...doesn't work if we don't use a \texttt{dummy} for disambiguation.}]
+struct Factory {
+    enum { INTEGRAL, FLOATING } m_type;
+    template<int> struct dummy { dummy(int) {  } };
+    template<typename T,
+             typename = std::enable_if<
+             std::is_integral_v<T>>
+    Factory(T, dummy<0>=0) : m_type { INTEGRAL } {}
+    template<typename T,
+             typename = std::enable_if<
+             std::is_floating_point_v<T>>
+    Factory(T, dummy<1>=0) : m_type { FLOATING } {}
+}; \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Concepts to the Rescue}
+        \framesubtitle{Problems and Solutions}
+        \begin{center}
+        \begin{lstlisting}[caption={\texttt{EqualityComparable} concept which ``satisfies''\footnote{not really; see the Ranges TS, this is \texttt{WeaklyEqualityComparable} \texttt{:)}} Table 1.}]
 template<typename T, typename U>
 concept EqualityComparable = requires(T x, U y) {
     { x == y } -> bool;
@@ -237,10 +310,70 @@ concept EqualityComparable = requires(T x, U y) {
         \end{center}
     \end{frame}
 
-    \frame{\frametitle{Questions?}}
+    \begin{frame}[fragile]{Concepts to the Rescue}
+        \framesubtitle{Problems and Solutions}
+        \begin{center}
+        \begin{lstlisting}[caption={overloading based on constraint with the \texttt{requires} clause.}]
+struct Factory {
+    enum { INTEGRAL, FLOATING } m_type;
+    template<typename T> requires Integral<T>
+    Factory(T) : m_type { INTEGRAL } {}
+    template<typename T> requires Floating<T>
+    Factory(T) : m_type { FLOATING } {}
+}; \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{The Ranges Library}
+        \begin{center}
+        \begin{lstlisting}[caption={example usage of the powerful range composability features.}]
+vector<int> nums { 5, 5, 2, 1, 1, 3, 4, 6, 7, 11 };
+nums = move(nums) | action::sort | action::uniques;
+//          { 1, 2, 3, 4, 5, 6, 7, 11 }
+auto even_nums = nums | view::remove_if([](int x) {
+                            return x % 2 == 1; })
+                      | view::transform([](int x) {
+                            return to_string(x);
+                      }); // ---> { "2", "4", "6" } \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Standard Library Concepts}
+        \begin{center}
+        \begin{table}
+        \begin{tabular}{lllll}
+            \toprule
+            \bf{Core} & \bf{Comparison} & \bf{Object} & \bf{Callable} \\
+            \toprule
+            Same          & Boolean               & Movable     & Invocable \\
+            DerivedFrom   & EqualityComparable    & Copyable    & Predicate \\
+            Constructible & StrictTotallyOrdered  & Regular     & Relation  \\
+            Swappable     & \emph{*With variants of it.} & Semiregular & WeakOrder \\
+            \bottomrule
+        \end{tabular}
+        \caption{excerpt from the concepts defined in the \texttt{<concepts>} header.}
+        \end{table}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Concepts Summary}
+        \framesubtitle{With post-Rapperswil Status!}
+    \end{frame}
+
+    \frame{\frametitle{Questions?} \begin{center}
+        \includegraphics[height=0.85\textheight]
+        {figures/regexs.png} \end{center} }
     \begin{frame}{References}
         \nocite{*}
         \bibliographystyle{alpha}
         \bibliography{slides}
     \end{frame}
+    \frame{\frametitle{Acknowledgements}
+        \begin{itemize}
+            \item{\textbf{Concepts Lite in Practice} by \emph{R. Orr} (2016) for giving a nice and intuitive introduction to Concepts Lite TS at ACCU 2016. Some of the examples are taken from his slides and the article.}
+            \item{\textbf{Generic Programming with Concepts} by \emph{A. Sutton} (2015), for presenting Concepts Lite from another angle. Many of the motivating example are based on those in his presentation too.}
+            \item{I would like to thank \emph{P. Sommerlad}, for hosting the wonderful meeting in Rapperswil (2018), and allowing me to participate in the discussion on Concepts along with other topics in EWG.}
+            \item{Finally, I would like to thank \emph{T. Lasser} and the other teachers and participants of ``Discovering and Teaching Modern C\texttt{++}''!}
+        \end{itemize}
+    }
 \end{document}
