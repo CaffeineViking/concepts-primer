@@ -169,7 +169,7 @@ point2 operator/(const point2& p, double s) {
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{}
+    \begin{frame}[fragile]{Mysterious Functions?}
         \framesubtitle{Generic Programming}
         \begin{center}
         \begin{lstlisting}[caption={another mysterious, yet strangely familiar function (déjà vu?).}]
@@ -184,7 +184,7 @@ point2 f(const point2* p,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{Generalization}
+    \begin{frame}[fragile]{Template Parameters}
         \framesubtitle{Generic Programming}
         \begin{center}
             \begin{lstlisting}[caption={natural generalization of the function from the previous slides.}]
@@ -200,7 +200,7 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{}
+    \begin{frame}[fragile]{Parameter Predicates}
         \framesubtitle{Generic Programming}
         \begin{center}
         \begin{lstlisting}[caption={constraining the function template using a \texttt{requires} clause.}]
@@ -221,7 +221,7 @@ T mean(const T* begin,
     \begin{frame}[fragile]{Problems and Solutions}
     \end{frame}
 
-    \begin{frame}[fragile]{Read the Specification}
+    \begin{frame}[fragile]{Read the Specifications}
         \framesubtitle{Problems and Solutions}
         \begin{center}
         \begin{table}
@@ -243,7 +243,7 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{Type Traits and SFINAE}
+    \begin{frame}[fragile]{Type Trait and SFINAE}
         \framesubtitle{Problems and Solutions}
         \begin{center}
         \begin{lstlisting}[caption={expressing \texttt{EqualityComparable} as a SFINAE type trait.}]
@@ -255,6 +255,20 @@ struct is_equality_comparable<T, U,
     typename std::enable_if<true,
     decltype(std::declval<T&>() == std::declval<U&>()
              ,(void)0)>::type> : std::true_type {  };\end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Concepts to the Rescue}
+        \framesubtitle{Problems and Solutions}
+        \begin{center}
+        \begin{lstlisting}[caption={\texttt{EqualityComparable} concept which ``satisfies''\footnote{not really; see the Ranges TS, this is \texttt{WeaklyEqualityComparable} \texttt{:)}} Table 1.}]
+template<typename T, typename U>
+concept EqualityComparable = requires(T x, U y) {
+    { x == y } -> bool;
+    { x != y } -> bool;
+    { y != x } -> bool;
+    { y == x } -> bool;
+}; \end{lstlisting}
         \end{center}
     \end{frame}
 
@@ -299,20 +313,6 @@ struct Factory {
     \begin{frame}[fragile]{Concepts to the Rescue}
         \framesubtitle{Problems and Solutions}
         \begin{center}
-        \begin{lstlisting}[caption={\texttt{EqualityComparable} concept which ``satisfies''\footnote{not really; see the Ranges TS, this is \texttt{WeaklyEqualityComparable} \texttt{:)}} Table 1.}]
-template<typename T, typename U>
-concept EqualityComparable = requires(T x, U y) {
-    { x == y } -> bool;
-    { x != y } -> bool;
-    { y != x } -> bool;
-    { y == x } -> bool;
-}; \end{lstlisting}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]{Concepts to the Rescue}
-        \framesubtitle{Problems and Solutions}
-        \begin{center}
         \begin{lstlisting}[caption={overloading based on constraint with the \texttt{requires} clause.}]
 struct Factory {
     enum { INTEGRAL, FLOATING } m_type;
@@ -324,18 +324,64 @@ struct Factory {
         \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{The Ranges Library}
-        \begin{center}
-        \begin{lstlisting}[caption={example usage of the powerful range composability features.}]
-vector<int> nums { 5, 5, 2, 1, 1, 3, 4, 6, 7, 11 };
-nums = move(nums) | action::sort | action::uniques;
-//          { 1, 2, 3, 4, 5, 6, 7, 11 }
-auto even_nums = nums | view::remove_if([](int x) {
-                            return x % 2 == 1; })
-                      | view::transform([](int x) {
-                            return to_string(x);
-                      }); // ---> { "2", "4", "6" } \end{lstlisting}
-        \end{center}
+    \begin{frame}[fragile]{\textbf{Concepts Lite}}
+    \end{frame}
+
+    \begin{frame}[fragile]{Applying Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Constraining Template Parameters}
+        \framesubtitle{Applying Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Concept Overload Resolution Rule}
+        \framesubtitle{Applying Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Logical Operations on Constraints}
+        \framesubtitle{Applying Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Defining Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Requirements}
+        \framesubtitle{Defining Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Simple Requirements}
+        \framesubtitle{Requirements}
+    \end{frame}
+
+    \begin{frame}[fragile]{Type Requirements}
+        \framesubtitle{Requirements}
+    \end{frame}
+
+    \begin{frame}[fragile]{Compound Requirements}
+        \framesubtitle{Requirements}
+    \end{frame}
+
+    \begin{frame}[fragile]{Nested Requirements}
+        \framesubtitle{Requirements}
+    \end{frame}
+
+    \begin{frame}[fragile]{Naming Constraints}
+        \framesubtitle{Defining Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{``Good'' Concepts}
+        \framesubtitle{Defining Constraints}
+    \end{frame}
+
+    \begin{frame}[fragile]{Terse Syntaxes}
+    \end{frame}
+
+    \begin{frame}[fragile]{Natural Syntax}
+        \framesubtitle{Terse Syntaxes}
+    \end{frame}
+
+    \begin{frame}[fragile]{In-Place Syntax}
+        \framesubtitle{Terse Syntaxes}
     \end{frame}
 
     \begin{frame}[fragile]{Standard Library Concepts}
