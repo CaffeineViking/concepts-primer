@@ -124,8 +124,8 @@
                     \item naming with \texttt{concept},
                     \item defining good concepts.
                 \end{itemize}
-                \item Natural or in-place syntax?
-                \item Ranges \& Concepts library
+                \item Standard Library Concepts
+                \item Terse syntaxes for C\texttt{++}20?
                 \item Summary, post-Rapperswil
             \end{enumerate}
         \end{columns}
@@ -365,12 +365,23 @@ struct Factory {
         \framesubtitle{Requirements}
     \end{frame}
 
-    \begin{frame}[fragile]{Naming Constraints}
-        \framesubtitle{Defining Constraints}
+    \begin{frame}[fragile]{Requirement Order}
+        \framesubtitle{Defining Concepts}
     \end{frame}
 
-    \begin{frame}[fragile]{``Good'' Concepts}
-        \framesubtitle{Defining Constraints}
+    \begin{frame}[fragile]{Naming Constraint}
+        \framesubtitle{Defining Concepts}
+    \end{frame}
+
+    \begin{frame}[fragile]{Defining ``Good'' Concepts}
+        \framesubtitle{Defining Concepts}
+    \end{frame}
+
+    \begin{frame}[fragile]{Standard Library Concepts}
+    \end{frame}
+
+    \begin{frame}[fragile]{Range TS Library}
+        \framesubtitle{Standard Library Concepts}
     \end{frame}
 
     \begin{frame}[fragile]{Terse Syntaxes}
@@ -384,22 +395,8 @@ struct Factory {
         \framesubtitle{Terse Syntaxes}
     \end{frame}
 
-    \begin{frame}[fragile]{Standard Library Concepts}
-        \begin{center}
-        \begin{table}
-        \begin{tabular}{lllll}
-            \toprule
-            \bf{Core} & \bf{Comparison} & \bf{Object} & \bf{Callable} \\
-            \toprule
-            Same          & Boolean               & Movable     & Invocable \\
-            DerivedFrom   & EqualityComparable    & Copyable    & Predicate \\
-            Constructible & StrictTotallyOrdered  & Regular     & Relation  \\
-            Swappable     & \emph{*With variants of it.} & Semiregular & WeakOrder \\
-            \bottomrule
-        \end{tabular}
-        \caption{excerpt from the concepts defined in the \texttt{<concepts>} header.}
-        \end{table}
-        \end{center}
+    \begin{frame}[fragile]{Adjective Syntax}
+        \framesubtitle{Terse Syntaxes}
     \end{frame}
 
     \begin{frame}[fragile]{Concepts Summary}
