@@ -335,7 +335,7 @@ struct Factory {
     \begin{frame}[fragile]{Constraining Template Parameters}
         \framesubtitle{Applying Constraints}
         \begin{center}
-        \begin{lstlisting}[caption={...}]
+        \begin{lstlisting}[caption={constraining types \& values by using the \texttt{requires} clause.}]
 template<class T> requires Add<T>
 T add(T x, T y) { return x + y; }
 
@@ -354,7 +354,7 @@ int square_even() { return N*N; } \end{lstlisting}
             \end{center}
         \end{columns}
         \begin{center}
-        \begin{lstlisting}[caption={overload resolution for \texttt{advance} based on type constraint.}]
+        \begin{lstlisting}[caption={function overloading for \texttt{advance} based on type constraint.}]
 template<typename T> requires ForwardIterator<T>
 void advance(T& iterator, std::size_t distance);
 
@@ -373,8 +373,12 @@ void advance(T& iterator, std::size_t distance); \end{lstlisting}
             \end{center}
         \end{columns}
         \begin{center}
-        \begin{lstlisting}[caption={}]
-\end{lstlisting}
+            \begin{lstlisting}[caption={examples to illustrate constraint \emph{conjunction} and \emph{disjunction}.}]
+template<typename T> requires ForwardIterator<T>
+void advance(T& iterator, std::size_t distance);
+
+template<typename T> requires RandomAccessIterator<T>
+void advance(T& iterator, std::size_t distance); \end{lstlisting}
         \end{center}
     \end{frame}
 
@@ -388,7 +392,7 @@ void advance(T& iterator, std::size_t distance); \end{lstlisting}
     \begin{frame}[fragile]{Simple Requirements}
         \framesubtitle{Requirements}
         \begin{center}
-        \begin{lstlisting}[caption={...}]
+        \begin{lstlisting}[caption={simple requirements in an incomplete \texttt{ForwardIterator}.}]
 template<typename T>
 concept ForwardIterator = requires {
     T{};
@@ -400,7 +404,7 @@ concept ForwardIterator = requires {
     \begin{frame}[fragile]{Type Requirements}
         \framesubtitle{Requirements}
         \begin{center}
-        \begin{lstlisting}[caption={...}]
+        \begin{lstlisting}[caption={type requirements in our incomplete \texttt{ForwardIterator}.}]
 template<typename T>
 concept ForwardIterator = requires {
     typename iterator_traits<T>::value_type;
@@ -415,7 +419,7 @@ concept ForwardIterator = requires {
     \begin{frame}[fragile]{Compound Requirements}
         \framesubtitle{Requirements}
         \begin{center}
-        \begin{lstlisting}[caption={...}]
+        \begin{lstlisting}[caption={compound requirements found in an \texttt{ForwardIterator}.}]
 template<typename T>
 concept ForwardIterator = requires(T x, T y) {
     {  *x } -> iterator_traits<T>::reference;
@@ -431,13 +435,13 @@ concept ForwardIterator = requires(T x, T y) {
     \end{frame}
 
     \begin{frame}[fragile]{Requirement Order}
-        \framesubtitle{Defining Concepts}
+        \framesubtitle{Defining Constraints}
     \end{frame}
 
-    \begin{frame}[fragile]{Naming Constraint}
-        \framesubtitle{Defining Concepts}
+    \begin{frame}[fragile]{Naming Constraints}
+        \framesubtitle{Defining Constraints}
         \begin{center}
-        \begin{lstlisting}[caption={...}]
+        \begin{lstlisting}[caption={giving names to constraints by using the \texttt{concept} keyword.}]
 template<typename T>
 concept ForwardIterator = InputIterator<T> &&
                           DefaultConstructible<T> &&
@@ -454,7 +458,7 @@ concept BidirectionalIterator = requires(T x) {
     \end{frame}
 
     \begin{frame}[fragile]{Defining ``Good'' Concepts}
-        \framesubtitle{Defining Concepts}
+        \framesubtitle{Defining Constraints}
     \end{frame}
 
     \begin{frame}[fragile]{Standard Library Concepts}
