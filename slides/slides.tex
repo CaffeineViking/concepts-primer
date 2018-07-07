@@ -45,9 +45,11 @@
         morekeywords = {
             concept,
             requires,
-            T, U, V,
+            T, U, N,
             point2,
             vector,
+            noexcept,
+            size_t
         }}
 
 \let\svthefootnote\thefootnote
@@ -332,14 +334,48 @@ struct Factory {
 
     \begin{frame}[fragile]{Constraining Template Parameters}
         \framesubtitle{Applying Constraints}
+        \begin{center}
+        \begin{lstlisting}[caption={...}]
+template<class T> requires Add<T>
+T add(T x, T y) { return x + y; }
+
+template<auto N> requires Even<N>
+int square_even() { return N*N; } \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Concept Overload Resolution Rule}
         \framesubtitle{Applying Constraints}
+        \begin{columns}
+        \column{0.7\textwidth}
+        \column{0.3\textwidth}
+            \begin{center}
+                \includegraphics[width=\textwidth]{figures/iterators.eps}
+            \end{center}
+        \end{columns}
+        \begin{center}
+        \begin{lstlisting}[caption={overload resolution for \texttt{advance} based on type constraint.}]
+template<typename T> requires ForwardIterator<T>
+void advance(T& iterator, std::size_t distance);
+
+template<typename T> requires RandomAccessIterator<T>
+void advance(T& iterator, std::size_t distance); \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Logical Operations on Constraints}
         \framesubtitle{Applying Constraints}
+        \begin{columns}
+        \column{0.7\textwidth}
+        \column{0.3\textwidth}
+            \begin{center}
+                \includegraphics[width=0.815\textwidth]{figures/logical.eps}
+            \end{center}
+        \end{columns}
+        \begin{center}
+        \begin{lstlisting}[caption={}]
+\end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Defining Constraints}
@@ -351,14 +387,43 @@ struct Factory {
 
     \begin{frame}[fragile]{Simple Requirements}
         \framesubtitle{Requirements}
+        \begin{center}
+        \begin{lstlisting}[caption={...}]
+template<typename T>
+concept ForwardIterator = requires {
+    T{};
+    T();
+}; \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Type Requirements}
         \framesubtitle{Requirements}
+        \begin{center}
+        \begin{lstlisting}[caption={...}]
+template<typename T>
+concept ForwardIterator = requires {
+    typename iterator_traits<T>::value_type;
+    typename iterator_traits<T>::difference_type;
+    typename iterator_traits<T>::reference;
+    typename iterator_traits<T>::pointer;
+    typename iterator_traits<T>::iterator_category;
+}; \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Compound Requirements}
         \framesubtitle{Requirements}
+        \begin{center}
+        \begin{lstlisting}[caption={...}]
+template<typename T>
+concept ForwardIterator = requires(T x, T y) {
+    {  *x } -> iterator_traits<T>::reference;
+    { ++x } -> T&;
+    { x++ } -> T;
+    { std::swap(x, y) } noexcept;
+}; \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Nested Requirements}
@@ -371,6 +436,21 @@ struct Factory {
 
     \begin{frame}[fragile]{Naming Constraint}
         \framesubtitle{Defining Concepts}
+        \begin{center}
+        \begin{lstlisting}[caption={...}]
+template<typename T>
+concept ForwardIterator = InputIterator<T> &&
+                          DefaultConstructible<T> &&
+                          EqualityComparable<T, T> &&
+                          WeaklyIncrementable<T> &&
+                          SwappableWith<T, T>;
+template<typename T>
+concept BidirectionalIterator = requires(T x) {
+    { --x } -> T&;
+    { x-- } -> T;
+} && ForwardIterator<T>;
+\end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Defining ``Good'' Concepts}
@@ -391,11 +471,11 @@ struct Factory {
         \framesubtitle{Terse Syntaxes}
     \end{frame}
 
-    \begin{frame}[fragile]{In-Place Syntax}
+    \begin{frame}[fragile]{Concepts In-Place Syntax}
         \framesubtitle{Terse Syntaxes}
     \end{frame}
 
-    \begin{frame}[fragile]{Adjective Syntax}
+    \begin{frame}[fragile]{Constrained \textbf{auto} Syntax}
         \framesubtitle{Terse Syntaxes}
     \end{frame}
 
