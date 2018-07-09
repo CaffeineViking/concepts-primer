@@ -3,6 +3,7 @@
 \usepackage{algorithmic}
 \usepackage{algorithm}
 \usepackage{booktabs}
+\usepackage{textcomp}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{courier}
@@ -39,8 +40,6 @@
         numbersep = 5pt,
         xleftmargin = 16pt,
         framexleftmargin = 16pt,
-        belowskip = \bigskipamount,
-        aboveskip = \bigskipamount,
         escapeinside={<@}{@>},
         morekeywords = {
             concept,
@@ -49,7 +48,8 @@
             point2,
             vector,
             noexcept,
-            size_t
+            size_t,
+            decltype
         }}
 
 \let\svthefootnote\thefootnote
@@ -202,6 +202,22 @@ T mean(const T* begin,
         \end{center}
     \end{frame}
 
+    \begin{frame}[fragile]{Comically Bad Errors}
+        \framesubtitle{Generic Programming}
+        \begin{center}
+            \begin{lstlisting}[caption={classic code examples that give ``bad'' template error messages.}]
+std::list l { 5, 1, 4, 3, 2 };
+std::sort(l.begin(), l.end());
+// <@\texttildelow @>48 lines of errors in gcc.
+
+struct Widget {  };
+
+std::set<Widget> w;
+w.insert(Widget{});
+// <@\texttildelow @>412 lines here.\end{lstlisting}
+        \end{center}
+    \end{frame}
+
     \begin{frame}[fragile]{Parameter Predicates}
         \framesubtitle{Generic Programming}
         \begin{center}
@@ -280,7 +296,6 @@ concept EqualityComparable = requires(T x, U y) {
         \begin{lstlisting}[caption={overloading the constructor by using SFINAE \& type traits...}]
 struct Factory {
     enum { INTEGRAL, FLOATING } m_type;
-
     template<typename T,
              typename = std::enable_if<
              std::is_integral_v<T>>
@@ -334,11 +349,35 @@ struct Factory {
 
     \begin{frame}[fragile]{Constraining Template Parameters}
         \framesubtitle{Applying Constraints}
+        Both \emph{type} \& \emph{non-type template parameters} may be \emph{constrained} by using a \emph{requires clause}. The \emph{constraint expressions} on its right can be anything that evaluates to \texttt{bool} at compile-time. \emph{Instantiation} occurs \textbf{only} when the entire constraint expression evaluates \texttt{true}!
+        \vspace{-1em}
         \begin{center}
         \begin{lstlisting}[caption={constraining types \& values by using the \texttt{requires} clause.}]
 template<class T> requires Add<T>
 T add(T x, T y) { return x + y; }
 
+template<typename T> requires Number<T> class Matrix;
+
+
+
+template<auto N> requires Even<N>
+int square_even() { return N*N; } \end{lstlisting}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Constraining Template Parameters}
+        \framesubtitle{Applying Constraints}
+        Both \emph{type} \& \emph{non-type template parameters} may be \emph{constrained} by using a \emph{requires clause}. The \emph{constraint expressions} on its right can be anything that evaluates to \texttt{bool} at compile-time. \emph{Instantiation} occurs \textbf{only} when the entire constraint expression evaluates \texttt{true}!
+        \vspace{-1em}
+        \begin{center}
+        \begin{lstlisting}[caption={which even supports constraining C\texttt{++}20 generic lambdas!?}]
+template<class T> requires Add<T>
+T add(T x, T y) { return x + y; }
+
+template<typename T> requires Number<T> class Matrix;
+auto add = []<typename T>(T x, T y) requires Add<T> {
+    return x + y;
+};
 template<auto N> requires Even<N>
 int square_even() { return N*N; } \end{lstlisting}
         \end{center}
@@ -347,8 +386,10 @@ int square_even() { return N*N; } \end{lstlisting}
     \begin{frame}[fragile]{Concept Overload Resolution Rule}
         \framesubtitle{Applying Constraints}
         \begin{columns}
-        \column{0.7\textwidth}
-        \column{0.3\textwidth}
+        \column{0.735\textwidth}
+            Intuitively, the most \emph{constrained overload} will be chosen (i.e. with the \textbf{most} requirements). Since this is now part of ``official'' \emph{overload resolution}, and isn't a ad-hoc method like SFINAE, it gives an uniform syntax with the rest of the language. The amount of edge-cases, and hacks is reduced.
+            \vspace{-1.5em}
+        \column{0.265\textwidth}
             \begin{center}
                 \includegraphics[width=\textwidth]{figures/iterators.eps}
             \end{center}
@@ -367,18 +408,27 @@ void advance(T& iterator, std::size_t distance); \end{lstlisting}
         \framesubtitle{Applying Constraints}
         \begin{columns}
         \column{0.7\textwidth}
+            The constraint expression can also be a logical summation of constraints by using \texttt{\&\&} and \texttt{||}. It's very similar to how the operator work, and should give no surprises. Evaluate to \texttt{true} iff:
+            \vspace{-0.9em}
+            \begin{itemize}
+                \item{\textbf{Conjunctions:} both constraints satisfied,}
+                \item{\textbf{Disjunctions:} \ at least one was satisfied.}
+            \end{itemize}
         \column{0.3\textwidth}
             \begin{center}
                 \includegraphics[width=0.815\textwidth]{figures/logical.eps}
+            \vspace{1.0em}
             \end{center}
         \end{columns}
         \begin{center}
-            \begin{lstlisting}[caption={examples to illustrate constraint \emph{conjunction} and \emph{disjunction}.}]
-template<typename T> requires ForwardIterator<T>
-void advance(T& iterator, std::size_t distance);
+            \vspace{-1.0em}
+            \begin{lstlisting}
+template<typename T> requires is_integral_v<T> ||
+                              is_floating_point_v<T>;
+T add(T x, T y) requires Summable<T> { return x+y; }
 
-template<typename T> requires RandomAccessIterator<T>
-void advance(T& iterator, std::size_t distance); \end{lstlisting}
+template<auto N> requires Even<N> && Num<decltype(N)>
+int square_even() { return N*N;  } // value & type N \end{lstlisting}
         \end{center}
     \end{frame}
 
@@ -397,7 +447,8 @@ template<typename T>
 concept ForwardIterator = requires {
     T{};
     T();
-}; \end{lstlisting}
+};
+\end{lstlisting}
         \end{center}
     \end{frame}
 
@@ -421,10 +472,11 @@ concept ForwardIterator = requires {
         \begin{center}
         \begin{lstlisting}[caption={compound requirements found in an \texttt{ForwardIterator}.}]
 template<typename T>
-concept ForwardIterator = requires(T x, T y) {
+concept ForwardIterator = requires(T x) {
     {  *x } -> iterator_traits<T>::reference;
     { ++x } -> T&;
     { x++ } -> T;
+} && requires(T x, T y) {
     { std::swap(x, y) } noexcept;
 }; \end{lstlisting}
         \end{center}
@@ -432,10 +484,18 @@ concept ForwardIterator = requires(T x, T y) {
 
     \begin{frame}[fragile]{Nested Requirements}
         \framesubtitle{Requirements}
-    \end{frame}
-
-    \begin{frame}[fragile]{Requirement Order}
-        \framesubtitle{Defining Constraints}
+        \begin{center}
+        \begin{lstlisting}[caption={usage of nested requirement in an \texttt{Allocatable} concept.}]
+template<typename T>
+concept Allocatable = requires(T x, std::size_t n) {
+    requires Same<T*, decltype(&x)>;
+    { x.<@\texttildelow @>T() } noexcept;
+    requires Same<T*, decltype(new T)>;
+    requires Same<T*, decltype(new T[n])>;
+    { delete new T[n] };
+    { delete new T };
+}; \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Naming Constraints}
@@ -453,7 +513,7 @@ concept BidirectionalIterator = requires(T x) {
     { --x } -> T&;
     { x-- } -> T;
 } && ForwardIterator<T>;
-\end{lstlisting}
+template<auto N> concept Even = (N % 2) == 0;\end{lstlisting}
         \end{center}
     \end{frame}
 
@@ -462,25 +522,111 @@ concept BidirectionalIterator = requires(T x) {
     \end{frame}
 
     \begin{frame}[fragile]{Standard Library Concepts}
+        \begin{center}
+        \begin{table}
+        \begin{tabular}{cccc}
+            \toprule
+            \textbf{Core} & \textbf{Comparison} & \textbf{Object} & \textbf{Callable}\\
+            \midrule
+            Same & Boolean & Copyable & Invocable \\
+            Integral & EqualityComparable & Movable & Predicate \\
+            Swappable & StrictTotallyOrdered  & Regular & Relation \\
+            Constructible & + $\cdots$With variants!   & Semiregular & WeakOrder \\
+            \bottomrule
+        \end{tabular}
+        \caption{excerpt of the concept groups from the \texttt{<concepts>} header.}
+        \end{table}
+        \end{center}
     \end{frame}
 
-    \begin{frame}[fragile]{Range TS Library}
+    \begin{frame}[fragile]{Ranges TS Library}
         \framesubtitle{Standard Library Concepts}
+        \begin{center}
+        \begin{lstlisting}[caption={example of the composability possibilities of range adaptors.}]
+std::vector v { 10, 2, 6, 10, 4, 1, 9, 5, 8, 3 };
+v = std::move(v) | action::sort | action::unique;
+//  ---> v = { 1, 2, 3, 4, 5, 6, 8, 9, 10 } <--- 
+auto range_of_v = v | view::remove_if([](int i) {
+                          return i % 2 == 1; })
+                    | view::transform([](int i) {
+                          return to_string(i); })
+                    | view::take(4);
+// ---> range_of_v = { "2", "4", "6", "8" } <--- \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Terse Syntaxes}
+        \begin{itemize}
+            \item{\textbf{Natural syntax} by \emph{Bjarne Stroustrup et al.}, which was part of the Concepts TS, and is implemented in \texttt{gcc}'s \texttt{-fconcepts}. Issues was related to ambiguous syntax and introducer syntax.}
+            \item{\textbf{Concepts in-place syntax} by \emph{Herb Sutter}. In order to ``gain'' more consensus, removed ambiguity and dependent binding. It is forward-compatible with Bjarne syntax, but is a bit verbose.}
+            \item{\textbf{Adjective syntax variants} by \emph{Thomas Köppe et al.}, after the Rapperswil \emph{``Bjarne / Herb stand-off''}, a new syntax: YAACD. It's essentially a constrained \texttt{auto}, and handles simpler cases.}
+        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]{Natural Syntax}
         \framesubtitle{Terse Syntaxes}
+        \begin{center}
+        \begin{lstlisting}
+template<typename T> requires Sortable<T>
+void sort(T& range);
+
+template<Sortable T>
+void sort(T& range);
+void sort(Sortable& range);
+void sort(RandomAccessIterator begin,
+          RandomAccessIterator end);
+auto sort = []<Sortable T>(T& r) { };
+auto sort = [](Sortable& r) { };
+
+BidirectionalIterator it = l.begin();
+
+Mergeable{I1, I2, O}
+O merge(I1 f1, I1 l1, I2 f2, I2 l2, O d); \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Concepts In-Place Syntax}
         \framesubtitle{Terse Syntaxes}
+        \begin{center}
+        \begin{lstlisting}
+template<typename T> requires Sortable<T>
+void sort(T& range);
+
+template<Sortable{T}>
+void sort(T& range);
+void sort(Sortable{}& range);
+void sort(RandomAccessIterator{T} begin,
+          T end);
+auto sort = []<Sortable{T}>(T& r) { };
+auto sort = [](Sortable{}& r) { };
+
+BidirectionalIterator{T} it = l.begin();
+
+template<Mergeable{I1, I2, O}>
+O merge(I1 f1, I1 l1, I2 f2, I2 l2, O d); \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Constrained \textbf{auto} Syntax}
         \framesubtitle{Terse Syntaxes}
+        \begin{center}
+        \begin{lstlisting}
+template<typename T> requires Sortable<T>
+void sort(T& range);
+
+template<Sortable T>
+void sort(T& range);
+void sort(Sortable auto& range);
+template<RandomAccessIterator T>
+void sort(T begin, T end);
+auto sort = []<Sortable T>(T& r) { };
+auto sort = [](Sortable auto& r) { };
+
+BidirectionalIterator auto it = l.begin();
+template<class I1, class I2, typename O>
+    requires Mergeable<I1, I2, O>
+O merge(I1 f1, I1 l1, I2 f2, I2 l2, O d); \end{lstlisting}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Concepts Summary}
