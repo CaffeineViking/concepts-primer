@@ -134,10 +134,15 @@
     \end{frame}
 
     \begin{frame}[fragile]{Generic Programming}
+        C\texttt{++} is a rich multi-paradigm language, supporting both \emph{run time} and \emph{compile-time polymorphism}. At compile-time, \emph{templates} give support for \emph{generic programming}. However, templates are fragile, unlike their run time counterpart, because they are \emph{unconstrained}. This leads to \emph{bad error messages}, \emph{unclear interfaces}, and \underline{violence}.
+
+        \vspace{1em}
+        Let's build up an example of the current state of generics in C\texttt{++}, and see where they \emph{succeed} \& \emph{fail}; and where \emph{concepts} may help!
     \end{frame}
 
     \begin{frame}[fragile]{Regular Programming}
         \framesubtitle{Generic Programming}
+        Consider this function below, what does it do? How do you know? \textbf{Note:} this is not a very good implementation, e.g. \texttt{p > q} is bad.
         \begin{center}
         \begin{lstlisting}[caption={a ``mysterious'' function; can you figure out what this code is?}]
 double f(const double* p,
@@ -153,6 +158,7 @@ double f(const double* p,
 
     \begin{frame}[fragile]{Operator Overloading}
         \framesubtitle{Generic Programming}
+        We can make ``similarly behaving things'', have the same syntaxes.
         \begin{center}
         \begin{lstlisting}[caption={boilerplate for the next example; a very incomplete point class.}]
 struct point2 {
@@ -173,6 +179,7 @@ point2 operator/(const point2& p, double s) {
 
     \begin{frame}[fragile]{Mysterious Functions?}
         \framesubtitle{Generic Programming}
+        Consider this function below, what does it do? How do you know? \textbf{Note:} this is not a very good implementation, e.g. \texttt{p > q} is bad.
         \begin{center}
         \begin{lstlisting}[caption={another mysterious, yet strangely familiar function (déjà vu?).}]
 point2 f(const point2* p,
@@ -188,6 +195,7 @@ point2 f(const point2* p,
 
     \begin{frame}[fragile]{Template Parameters}
         \framesubtitle{Generic Programming}
+        Obviously, both functions are finding the mean/average somehow. Since both have the same syntax (thanks to operator overloading) we can ``lift'' the implementation. Now, what is \emph{required} from \textbf{\texttt{T}}?
         \begin{center}
             \begin{lstlisting}[caption={natural generalization of the function from the previous slides.}]
 template<typename T>
@@ -204,6 +212,7 @@ T mean(const T* begin,
 
     \begin{frame}[fragile]{Comically Bad Errors}
         \framesubtitle{Generic Programming}
+        Because \emph{requirements} of unconstrained templates aren't explicit, a user which hasn't understood the interface may get horrible errors because the syntax is checked \textbf{after} \emph{template instantiation}. Which might be deeply nested. Can't we check \textbf{before} instantiating this?
         \begin{center}
             \begin{lstlisting}[caption={classic code examples that give ``bad'' template error messages.}]
 std::list l { 5, 1, 4, 3, 2 };
@@ -220,6 +229,7 @@ w.insert(Widget{});
 
     \begin{frame}[fragile]{Parameter Predicates}
         \framesubtitle{Generic Programming}
+        Here we have \emph{constrained} the template parameter list, allowing the compilers to check requirements \textbf{before} instantiating the template.
         \begin{center}
         \begin{lstlisting}[caption={constraining the function template using a \texttt{requires} clause.}]
 template<typename T> requires DefaultConstructible<T>
@@ -237,6 +247,13 @@ T mean(const T* begin,
     \end{frame}
 
     \begin{frame}[fragile]{Problems and Solutions}
+        Before considering concepts, let's look at how we currently solve the problems we've discussed, and where these fall short. As you will shortly see, specifying constraints by concept is vastly better.
+        \vspace{1em}
+        \begin{itemize}
+            \item{\textbf{Just read the documentation:} good luck with that, even when people read it, they might implement it incorrectly :(}
+            \item{\textbf{Type traits and SFINAE:} powerful, and works in many of the cases we use concepts. \textbf{Not} easy to specify constraints.}
+            \item{\textbf{Tag dispatching plus libraries:} hacky, not discussed here.}
+        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]{Read the Specifications}
@@ -296,6 +313,7 @@ concept EqualityComparable = requires(T x, U y) {
         \begin{lstlisting}[caption={overloading the constructor by using SFINAE \& type traits...}]
 struct Factory {
     enum { INTEGRAL, FLOATING } m_type;
+
     template<typename T,
              typename = std::enable_if<
              std::is_integral_v<T>>
@@ -387,7 +405,7 @@ int square_even() { return N*N; } \end{lstlisting}
         \framesubtitle{Applying Constraints}
         \begin{columns}
         \column{0.735\textwidth}
-            Intuitively, the most \emph{constrained overload} will be chosen (i.e. with the \textbf{most} requirements). Since this is now part of ``official'' \emph{overload resolution}, and isn't a ad-hoc method like SFINAE, it gives an uniform syntax with the rest of the language. The amount of edge-cases, and hacks is reduced.
+            Intuitively, the most \emph{constrained overload} will be chosen (i.e. with the \textbf{most} requirements). Since this is now part of ``official'' \emph{overload resolution}, and isn't a ad-hoc method like SFINAE; it gives an uniform syntax with the rest of the language. The amount of edge-cases, and hacks is reduced.
             \vspace{-1.5em}
         \column{0.265\textwidth}
             \begin{center}
@@ -408,11 +426,11 @@ void advance(T& iterator, std::size_t distance); \end{lstlisting}
         \framesubtitle{Applying Constraints}
         \begin{columns}
         \column{0.7\textwidth}
-            The constraint expression can also be a logical summation of constraints by using \texttt{\&\&} and \texttt{||}. It's very similar to how the operator work, and should give no surprises. Evaluate to \texttt{true} iff:
+            The constraint expression can also be a logical summation of constraints by using \texttt{\&\&} and \texttt{||}. They are similar to logical operators, as should be no surprise. These evaluate to \texttt{true} when: \hfill
             \vspace{-0.9em}
             \begin{itemize}
-                \item{\textbf{Conjunctions:} both constraints satisfied,}
-                \item{\textbf{Disjunctions:} \ at least one was satisfied.}
+                \item{\textbf{conjunctions:} \textbf{both} constraints satisfied,}
+                \item{\textbf{disjunctions:}\ \textbf{at least one} was satisfied.}
             \end{itemize}
         \column{0.3\textwidth}
             \begin{center}
@@ -436,7 +454,14 @@ int square_even() { return N*N;  } // value & type N \end{lstlisting}
     \end{frame}
 
     \begin{frame}[fragile]{Requirements}
+        A list of syntactic \emph{requirements} for an template parameter can be checked by using an \emph{requires expression}. This expression evaluates to \texttt{true} when \textbf{all} requirements are \textbf{satisfied}. Artificial ``variables'' can be introduced, which have no linkage, storage or lifetime, and are only there for writing convenience (see e.g. \texttt{std::declval}).
         \framesubtitle{Defining Constraints}
+        \begin{itemize}
+        \item{\textbf{simple:} just asserts the validity of some expression \texttt{<expr>;},}
+        \item{\textbf{type:} checks the validity of some type by a \texttt{typename} prefix,}
+        \item{\textbf{compound:} validates the properties of some given expression,}
+        \item{\textbf{nested:} specifies \textbf{more} requirements based on local variables.}
+        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]{Simple Requirements}
@@ -500,6 +525,8 @@ concept Allocatable = requires(T x, std::size_t n) {
 
     \begin{frame}[fragile]{Naming Constraints}
         \framesubtitle{Defining Constraints}
+        One can name \emph{complex constraints} into a \emph{concept} with \texttt{concept}. It's a glorified \texttt{constexpr bool} without Turing completeness :)
+        \vspace{-0.7em}
         \begin{center}
         \begin{lstlisting}[caption={giving names to constraints by using the \texttt{concept} keyword.}]
 template<typename T>
@@ -519,9 +546,20 @@ template<auto N> concept Even = (N % 2) == 0;\end{lstlisting}
 
     \begin{frame}[fragile]{Defining ``Good'' Concepts}
         \framesubtitle{Defining Constraints}
+        Some concepts are better than others. Many of the concepts here, are not ``good'' concepts. The core idea is that concepts should be defined to make types and algorithms 'plug compatible'. Which is:\hfill
+        \vspace{0.8em}
+        \begin{itemize}
+            \item{to write \emph{algorithms} that can be used for a \emph{variety of types}, and}
+            \item{to define \emph{types} that can be used with a \emph{variety of algorithms}.}
+        \end{itemize}
+        \begin{center}
+        \emph{``the ideal is not minimal requirements, but requirements expressed in terms of fundamental and complete concepts.'' -- B.\ Stroustrup}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Standard Library Concepts}
+        Writing many of the ``boilerplate'' concepts isn't fun, and it's easy to get them wrong. Luckily, C\texttt{++}20 will be receiving a bunch from the \emph{Ranges TS}. Many of these we've defined in this presentation!!
+        \vspace{1em}
         \begin{center}
         \begin{table}
         \begin{tabular}{cccc}
@@ -541,6 +579,7 @@ template<auto N> concept Even = (N % 2) == 0;\end{lstlisting}
 
     \begin{frame}[fragile]{Ranges TS Library}
         \framesubtitle{Standard Library Concepts}
+        Many of the remaining concepts are found in the \emph{ranges library}, by \emph{Eric Niebler}, under the \texttt{<ranges>} header. e.g \texttt{InputIterator}. Along with them, we'll get a concepts-ready STL for C\texttt{++}20, which enable cool things like \emph{lazy evaluation} by using \emph{range views/actions}.
         \begin{center}
         \begin{lstlisting}[caption={example of the composability possibilities of range adaptors.}]
 std::vector v { 10, 2, 6, 10, 4, 1, 9, 5, 8, 3 };
