@@ -252,7 +252,7 @@ T mean(const T* begin,
         \begin{itemize}
             \item{\textbf{Just read the documentation:} good luck with that, even when people read it, they might implement it incorrectly :(}
             \item{\textbf{Type traits and SFINAE:} powerful, and works in many of the cases we use concepts. \textbf{Not} easy to specify constraints.}
-            \item{\textbf{Tag dispatching plus libraries:} hacky, not discussed here.}
+            \item{\textbf{Tag dispatching plus libraries:} maybe, not discussed here.}
         \end{itemize}
     \end{frame}
 
@@ -360,9 +360,24 @@ struct Factory {
     \end{frame}
 
     \begin{frame}[fragile]{\textbf{Concepts Lite}}
+        An extension to C\texttt{++} templates, allowing compile-time checking of template parameters by \emph{constraining} them via \emph{syntax requirements}.
+
+        \begin{itemize}
+            \item{\textbf{Applying constraints:} by using the \texttt{requires} \emph{clauses}. \ $\leftarrow$ \textbf{!}}
+            \item{\textbf{Defining requirements:} with an \texttt{requires} \emph{expression}. $\leftarrow$ \textbf{!}}
+        \end{itemize}
+
+        Constraints can be applied more intuitively with a \emph{terse syntax} but since it's still controversial, we'll present a subset: \textbf{Concepts Zero}.
+
+        \begin{itemize}
+            \item{\textbf{History:} the first concepts proposal came out in 2003, it was merged \& un-merged out of C\texttt{++}11 and postponed in C\texttt{++}17}.
+        \end{itemize}
     \end{frame}
 
     \begin{frame}[fragile]{Applying Constraints}
+        \begin{center}
+        \includegraphics[width=0.9\textwidth]{figures/applying.png}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Constraining Template Parameters}
@@ -451,6 +466,9 @@ int square_even() { return N*N;  } // value & type N \end{lstlisting}
     \end{frame}
 
     \begin{frame}[fragile]{Defining Constraints}
+        \begin{center}
+        \includegraphics[width=0.9\textwidth]{figures/defining.png}
+        \end{center}
     \end{frame}
 
     \begin{frame}[fragile]{Requirements}
