@@ -1,10 +1,12 @@
 name := primer
 viewer := mupdf
 
+sections := $(wildcard sections/*.tex)
+
 all: $(name).pdf
 view: $(name).pdf
 	$(viewer) $(name).pdf
-$(name).pdf: $(name).tex $(name).bib
+$(name).pdf: $(name).tex $(sections) $(name).bib
 	mkdir -p build
 	pdflatex -output-directory build/ $(name)
 	bibtex build/$(name)
