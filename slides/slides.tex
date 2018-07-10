@@ -252,7 +252,7 @@ T mean(const T* begin,
         \begin{itemize}
             \item{\textbf{Just read the documentation:} good luck with that, even when people read it, they might implement it incorrectly :(}
             \item{\textbf{Type traits and SFINAE:} powerful, and works in many of the cases we use concepts. \textbf{Not} easy to specify constraints.}
-            \item{\textbf{Tag dispatching plus libraries:} maybe, not discussed here.}
+            \item{\textbf{Tag dispatching plus libraries:} hacky, not discussed here.}
         \end{itemize}
     \end{frame}
 
@@ -688,6 +688,16 @@ O merge(I1 f1, I1 l1, I2 f2, I2 l2, O d); \end{lstlisting}
 
     \begin{frame}[fragile]{Concepts Summary}
         \framesubtitle{With post-Rapperswil Status!}
+        \begin{itemize}
+            \item{Generic programming for C\texttt{++} uses \emph{unconstrained templates}, which leads to \emph{horrible error messages}, and \emph{fragile interfaces}.}
+            \item{Existing techniques (like SFINAE) are either \emph{insufficient},\ \emph{not easy to define},\ or have laughably \emph{obscure edge-cases} when it comes to defining, and using \emph{template parameter constraints}.}
+            \item{With \emph{concepts} we can \emph{constrain template parameters} but not have to suffer from the problems above, by using its features:}
+                \begin{itemize}
+                    \item{\texttt{requires} \emph{clauses}, \texttt{requires} \emph{expressions} \& \emph{terse syntaxes}.}
+                \end{itemize}
+            \item{Generic programming in C\texttt{++}20 is a lot nicer using concepts!}
+            \item{\textbf{Status:} Concepts, SLC/Ranges, Contracts, likely for C\texttt{++}20!}
+        \end{itemize}
     \end{frame}
 
     \frame{\frametitle{Questions?} \begin{center}
