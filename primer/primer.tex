@@ -12,6 +12,7 @@
 \usepackage{listings}
 \usepackage{pdfpages}
 \usepackage{booktabs}
+\usepackage{setspace}
 \usepackage{mathtools}
 \usepackage{blindtext}
 \usepackage{pgfornament}
@@ -63,8 +64,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
 \begin{document}
 
-    \maketitle \begin{abstract}
-    \end{abstract} \tableofcontents
+    \maketitle \begin{spacing}{0.94} \tableofcontents \end{spacing}
 
     \mbox{} \\ \noindent \textbf{Warning:} the author is neither an expert or a member of the standardization committee; only a fool would take everything that is written here as the truth. However, the author has tried (within his knowledge) to keep this document as accurate as possible. If you, the reader, find any mistakes in this document, please send an e-mail (or even better, create an issue on GitHub, and fix it!) \mbox{}  \thispagestyle{empty} \newpage \pagenumbering{arabic}
 
@@ -84,7 +84,11 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \newpage
 
-    \section{Concepts Library} \label{sec:concepts_library} \input{sections/concepts_library.tex}
+    \section{Standard Library Concepts} \label{sec:standard_library_concepts} \input{sections/standard_library_concepts.tex}
+
+    \newpage
+
+    \section{Summary} \label{sec:summary} \input{sections/summary.tex}
 
     \newpage
     \pagenumbering{gobble}
