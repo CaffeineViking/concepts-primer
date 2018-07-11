@@ -1,5 +1,5 @@
-A Primer on the C++ Concepts Extension
-======================================
+A C++ Concepts Primer
+=====================
 
 Compiling
 ---------
