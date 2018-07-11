@@ -1,2 +1,2 @@
-A C++20 Concepts Primer
+A C++ Concepts Primer
 =====================
