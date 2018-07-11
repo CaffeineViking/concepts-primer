@@ -1,25 +1,29 @@
 A C++ Concepts Primer
 =====================
 
-Compiling
+by **Erik Sven Vasconcelos Jansson** in mid-2018.
+
+Abstract
+--------
+
+Documents
 ---------
 
-Since no compiler has (as of this writing) full support for the most recent Concepts
-syntax, most of the examples given in the presentation and the attached primer, will
-**not** compile. However, an earlier version of GCC *did* introduce the `-fconcepts`
-flag, which allows one to at least have a taste of how Concepts works in practice.
-The general idea of Concepts will always stay the same though, so all rules of thumb
-and knowledge you gain from the old syntax transfers over to the new syntax. I've
-therefore compiled a set of examples on how to use Concepts in the old syntax, which
-should all compile if you are using GCC 6.1 or higher with the `-fconcepts` flag.
-If you are running a Unix-like system, you can build all of the examples with `make all`.
-To test that your compiler has proper support for Concepts, run `make check`, and
-hope you get a friendly message saying you are **ready to roll**! If not, install
-GCC 6.1.0 with `-fconcepts` support.
+* **[Primer (pdf)](primer/primer.pdf):** the primer itself, which consists of a short overview of *generic programming* in a  pre-concepts world, the problems with *unconstrained template parameters*, what methods we already have (e.g. *type traits and SFINAE*) for solving these problems, and why they are *insufficient*. Then, we present *concepts*, a way to *constrain template parameters* with the `requires` *clause*, and the `requires` *expression*, a way to easily specify *requirements* for a `concept`. The primer also covers *standard library concepts*, and the different *terse syntaxes* proposed for C++20, and their current status.
+* **[Slides (pdf)](slides/slides.pdf):** essentially the same information as the above, but condensed, and not as good. Only for an introduction.
 
+Typesetting
+-----------
 
-Resources
----------
+Both the primer and the slides are typeset with *LaTeX*, and are available as PDFs in the section above, but if if you still want to typeset the latest version for some reason, here is how to do it (in *TeXLive*): go into `primer` or `slides`, and call `make` :)
 
-* **[Constraints and Concepts:](http://en.cppreference.com/w/cpp/language/constraints)** the description in `cppreference` is quite intuitive, but hasn't been fully updated to match the current proposed syntax. But it's quite nice, to get an overview.
-* **[C++ Standards Commitee Papers:](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/)** the only **true** source for accurate and up-to-date information on the current concepts syntax (but a bit daunting to read). Matches with primer syntax.
+Examples
+--------
+
+Almost all examples in the primer should be runnable after doing the hack in `concepts.h`. In fact, I would recommend you to just import `concepts.h` if you want to play around with concepts. The only examples that aren't runnable, are those that use the more novel *terse syntaxes* (i.e. *concepts in-place syntax* and the *adjective syntax*). The *natural syntax* as in the TS should work fine. You can compile all examples in the primer by going to `primer/listings` and calling `make`. Since code in the primer is taken directly from these listings, everything you see in the primer is syntactically correct (not terse syntax).
+
+Acknowledgements
+----------------
+
+References
+----------
