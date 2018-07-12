@@ -22,7 +22,7 @@ polyglot/$(name).pdf: $(name).pdf polyglot/$(name).zip
 	cat $(name).pdf polyglot/$(name).zip > polyglot/$(name).pdf
 	zip -A polyglot/$(name).pdf
 distribute: distclean all polyglot
-	cp polyglot/$(name).pdf .
+	cp polyglot/$(name).pdf concepts-primer.pdf
 clean:
 	rm -rf build
 distclean: clean

@@ -2,6 +2,8 @@ CXXFLAGS := -std=c++17 -fconcepts -Wall -Wextra -Wpedantic
 LDLIBS   := -lstdc++
 
 all: scratch mean centroid average
+gcc-test: check
+	@./checker
 check: checker
 	@./checker
 
