@@ -21,9 +21,12 @@ polyglot/$(name).zip: FORCE
 polyglot/$(name).pdf: $(name).pdf polyglot/$(name).zip
 	cat $(name).pdf polyglot/$(name).zip > polyglot/$(name).pdf
 	zip -A polyglot/$(name).pdf
+distribute: distclean all polyglot
+	cp polyglot/$(name).pdf .
 clean:
 	rm -rf build
 distclean: clean
+	rm -rf polyglot
 	rm -f $(name).pdf
 .PHONY: all clean
 FORCE:
