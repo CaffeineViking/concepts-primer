@@ -13,8 +13,16 @@ $(name).pdf: $(name).tex $(sections) $(name).bib
 	pdflatex -output-directory build/ $(name)
 	pdflatex -output-directory build/ $(name)
 	mv build/$(name).pdf .
+polyglot: polyglot/$(name).pdf
+polyglot/$(name).zip: FORCE
+	make -C examples distclean
+	zip -r $(name).zip examples
+polyglot/$(name).pdf: $(name).pdf polyglot/$(name).zip
+	cat $(name).pdf polyglot/$(name).zip > polyglot/$(name).pdf
+	zip -A polyglot/$(name).pdf
 clean:
 	rm -rf build
 distclean: clean
 	rm -f $(name).pdf
 .PHONY: all clean
+FORCE:

@@ -1,6 +1,13 @@
 build
 primer.pdf
 
+*.o
+examples/checker
+examples/scratch
+examples/mean
+examples/centroid
+examples/average
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
