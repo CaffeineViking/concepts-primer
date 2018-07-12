@@ -15,8 +15,9 @@ $(name).pdf: $(name).tex $(sections) $(name).bib
 	mv build/$(name).pdf .
 polyglot: polyglot/$(name).pdf
 polyglot/$(name).zip: FORCE
+	mkdir -p polyglot
 	make -C examples distclean
-	zip -r $(name).zip examples
+	zip -r polyglot/$(name).zip examples
 polyglot/$(name).pdf: $(name).pdf polyglot/$(name).zip
 	cat $(name).pdf polyglot/$(name).zip > polyglot/$(name).pdf
 	zip -A polyglot/$(name).pdf
