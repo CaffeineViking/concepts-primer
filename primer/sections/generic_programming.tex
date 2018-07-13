@@ -8,8 +8,43 @@
 
 \lstinputlisting[linerange={7-7,11-18}]{examples/average.cc}
 
+\begin{lstlisting}
+std::list l { 5, 1, 2, 4, 3 };
+std::sort(l.begin(), l.end());
+\end{lstlisting}
+
+\begin{lstlisting}
+struct Widget {  };
+std::set<Widget> w;
+w.insert(Widget{});
+\end{lstlisting}
+
 \lstinputlisting[linerange={7-18}]{examples/average.cc}
 
 \subsection{Type Traits and SFINAE} \label{sec:type_traits_and_sfinae}
+
+\begin{table}[h]
+\begin{tabular}{ccc}
+    \toprule
+    \bf{Expression} & \bf{Return Type} & \bf{Requirement Specification} \\
+    \midrule
+    \texttt{x == y} & \textbf{\texttt{bool}} convertible & \makecell[l]{\texttt{==}\, is an equivalence relation, that is,\\
+                                                               it has the following properties:\\
+                                                               $\rightarrow$ for all \texttt{x}, \texttt{x == x}\\
+                                                               $\rightarrow$ if \texttt{x == y}, then \texttt{y == x}\\
+                                                               $\rightarrow$ if \texttt{x == y}, \texttt{y == z}, then \texttt{x == z}} \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+\lstinputlisting[linerange={6-13}]{examples/sfinae.hh}
+
+\lstinputlisting[linerange={55-59}]{examples/concepts.h}
+
+\lstinputlisting[linerange={8-22}]{examples/factory.hh}
+
+\lstinputlisting[linerange={28-44}]{examples/factory.hh}
+
+\lstinputlisting[linerange={50-62}]{examples/factory.hh}
 
 \subsection{Tag Dispatching} \label{sec:tag_dispatching}

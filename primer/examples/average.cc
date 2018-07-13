@@ -29,11 +29,13 @@ int main(int, char**) {
     std::cout << average(points, points + points_size)
               << std::endl;
 
-#if false // switch to 'true' to see a error message!
+#if false // switch to 'true' to see an error message!
+
     std::string strings[] { "1", "2", "3", "4", "5" };
     auto strings_size = sizeof(strings) / sizeof(std::string);
     std::cout << average(strings, strings + strings_size)
               << std::endl;
+
 #endif
     return 0;
 }
