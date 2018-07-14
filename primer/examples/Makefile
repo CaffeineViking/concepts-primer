@@ -1,7 +1,7 @@
 CXXFLAGS := -std=c++17 -fconcepts -Wall -Wextra -Wpedantic
 LDLIBS   := -lstdc++
 
-all: scratch mean centroid average sfinae factory advance matrix iterator ranges natural zero misc
+all: scratch mean centroid average sfinae factory advance matrix iterators ranges natural zero misc
 gcc-test: check
 	@./checker
 check: checker
@@ -28,8 +28,8 @@ matrix.o: matrix.cc matrix.hh
 matrix: matrix.o
 advance: advance.o
 advance.o: advance.cc
-iterator: iterator.o
-iterator.o: iterator.cc
+iterators: iterators.o
+iterators.o: iterators.cc
 natural.o: natural.cc
 natural: natural.o
 ranges.o: ranges.cc
@@ -42,7 +42,7 @@ misc: misc.o
 clean: .FORCE
 	@rm -f *.o
 distclean: clean
-	@rm -f checker scratch mean point2 centroid average sfinae factory advance matrix iterator ranges natural zero misc
+	@rm -f checker scratch mean point2 centroid average sfinae factory advance matrix iterators ranges natural zero misc
 
 # These are not the dependencies you are looking for
 # - Obi-Wan Kenobi, Star Wars IV.

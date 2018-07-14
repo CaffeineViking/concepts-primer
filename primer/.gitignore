@@ -8,7 +8,7 @@ examples/average
 examples/checker
 examples/centroid
 examples/factory
-examples/iterator
+examples/iterators
 examples/matrix
 examples/mean
 examples/misc
