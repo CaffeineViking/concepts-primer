@@ -3,11 +3,20 @@ polyglot
 primer.pdf
 
 *.o
-examples/checker
-examples/scratch
-examples/mean
-examples/centroid
+examples/advance
 examples/average
+examples/checker
+examples/centroid
+examples/factory
+examples/iterator
+examples/matrix
+examples/mean
+examples/misc
+examples/natural
+examples/ranges
+examples/scratch
+examples/sfinae
+examples/zero
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
