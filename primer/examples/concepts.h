@@ -196,4 +196,7 @@ concept Allocatable = requires(T x, std::size_t n) {
     { delete new T };
 };
 
+template<typename T> concept Unsigned = std::is_unsigned_v<T>;
+template<typename T> concept Signed = std::is_signed_v<T>;
+
 #endif

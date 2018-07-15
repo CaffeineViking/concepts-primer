@@ -31,12 +31,21 @@
             tracking=true, kerning=true, spacing=true,
             factor=1100, stretch=10, shrink=10]{microtype}
 
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
 \newcommand\Cpp{C\nolinebreak[4]\hspace{.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
 \DeclareCaptionFormat{modifiedlst}{\rule{\linewidth}{0.85pt}\\[-2.9pt]#1#2#3}
 \captionsetup[lstlisting]{format =  modifiedlst,
 labelfont=bf,singlelinecheck=off,labelsep=space}
 \lstset{basicstyle=\footnotesize\ttfamily,
         breakatwhitespace = false,
+        numberstyle=\tiny,
         breaklines = true,
         keepspaces = true,
         language = C++,
@@ -56,7 +65,9 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
             noexcept,
             T, U, N,
             decltype,
-            size_t
+            size_t,
+            R, C,
+            constexpr
         }}
 
 \title{\vspace{-1.5em}\textbf{\Cpp\ Concepts Primer:}\\
@@ -70,7 +81,7 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \maketitle \begin{spacing}{0.94} \tableofcontents \end{spacing}
 
-    \mbox{} \\ \noindent \textbf{Warning:} the author is neither an expert or a member of the standardization committee; only a fool would take everything that is written here as the truth. However, the author has tried (within his knowledge) to keep this document as accurate as possible. If you, the reader, find any mistakes in this document, please send an e-mail (or even better, create an issue on GitHub, and fix it!) \mbox{}  \thispagestyle{empty} \newpage \pagenumbering{arabic}
+    \mbox{} \\ \noindent \textbf{Warning:} the author is neither an expert or a member of the standardization committee; only a fool would take everything that is written here as the truth. However, the author has tried (within his knowledge) to keep this document as accurate as possible. If you, the reader, find any mistakes in this document, please send an e-mail (or even better, create an issue on \href{https://github.com/CaffeineViking/concepts-primer}{\texttt{GitHub}}, and fix it!) \mbox{}  \thispagestyle{empty} \newpage \pagenumbering{arabic}
 
     \section{Introduction} \label{sec:introduction} \input{sections/introduction.tex}
 

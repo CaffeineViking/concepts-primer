@@ -51,9 +51,9 @@ public:
 
     template<typename U>
         requires ScalableWith<T, U> && Number<U>
-    Matrix<T, R, C>& operator*=(const U& scalar) {
+    Matrix<T, R, C>& operator*=(U scalar) {
         std::for_each(data.begin(), data.end(),
-                      [&scalar](T& element) {
+                      [scalar](T& element) {
             element *= scalar;
         });
 
@@ -62,9 +62,9 @@ public:
 
     template<typename U>
         requires SummableWith<T, U> && Number<U>
-    Matrix<T, R, C>& operator+=(const U& scalar) {
+    Matrix<T, R, C>& operator+=(U scalar) {
         std::for_each(data.begin(), data.end(),
-                      [&scalar](T& element) {
+                      [scalar](T& element) {
             element += scalar;
         });
 
@@ -73,9 +73,9 @@ public:
 
     template<typename U>
         requires SubtractableWith<T, U> && Number<U>
-    Matrix<T, R, C>& operator-=(const U& scalar) {
+    Matrix<T, R, C>& operator-=(U scalar) {
         std::for_each(data.begin(), data.end(),
-                      [&scalar](T& element) {
+                      [scalar](T& element) {
             element -= scalar;
         });
 
@@ -121,8 +121,13 @@ public:
                     sum += (*this)(i,j) * matrix(j,k);
                 temporary(i,k) = sum;
             }
-        } return temporary;
+        }
+
+        return temporary;
     }
+
+    // More operations, like cross products etc.. Should
+    // be defined for this to be a more complete matrix.
 
 private:
     std::array<T, R*C> data; // Might be bad b.c. we'll

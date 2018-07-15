@@ -1,1 +1,10 @@
 \subsection{The Ranges Library} \label{sec:the_ranges_library}
+
+    \begin{lstlisting}
+std::vector v { 10, 2, 6, 10, 4, 1, 9, 5, 8, 3 };
+v = std::move(v) | action::sort | action::unique; \end{lstlisting}
+
+    \begin{lstlisting}
+auto r = v | view::remove_if([](int i){ return (i % 2) == 1; })
+           | view::transform([](int i){ return to_string(i); })
+           | view::take(4); \end{lstlisting}

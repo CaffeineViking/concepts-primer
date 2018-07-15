@@ -22,6 +22,7 @@ bool check_concepts(const T& x, const U& y) {
 }
 
 int main(int, char**) {
+
     check(4, 2);
     check(4.0, 2.0);
     check(4.0, 2);
@@ -47,5 +48,6 @@ int main(int, char**) {
     check_concepts(2, v4);
 
 #endif
+
     return 0;
 }

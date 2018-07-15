@@ -18,6 +18,7 @@ T average(const T* begin,
 }
 
 int main(int, char**) {
+
     double numbers[] { 1, 2, 3, 4, 5 };
     auto numbers_size { sizeof(numbers) / sizeof(double) };
     std::cout << average(numbers, numbers + numbers_size)
@@ -37,5 +38,6 @@ int main(int, char**) {
               << std::endl;
 
 #endif
+
     return 0;
 }

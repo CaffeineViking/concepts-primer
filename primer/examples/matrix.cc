@@ -4,6 +4,7 @@
 #include <iostream>
 
 int main(int, char**) {
+
     Matrix<int, 2,2> n { 1, 0,
                          0, 1 };
     Matrix<int, 2,2> m { 0, 1,

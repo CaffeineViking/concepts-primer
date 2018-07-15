@@ -2,14 +2,77 @@
 
     \subsubsection{Requires Clauses} \label{sec:requires_clauses}
 
+        \lstinputlisting[linerange={6-13}]{examples/misc.cc}
+
+        \begin{lstlisting}
+[]<typename T>(T x, T y) requires EqualityComparable<T> {
+    return x == y;
+}; \end{lstlisting}
+
+        \lstinputlisting[linerange={18-22,52-61,138-138}]{examples/matrix.hh}
+
+        \lstinputlisting[linerange={24-28}]{examples/misc.cc}
+
+        \lstinputlisting[linerange={42-52}]{examples/misc.cc}
+
     \subsubsection{Overload Resolution} \label{sec:overload_resolution}
 
+        \lstinputlisting[linerange={47-50,52-59,61-62}]{examples/advance.cc}
+
     \subsubsection{Logical Operations} \label{sec:logical_operations}
+
+        \lstinputlisting[linerange={15-22}]{examples/misc.cc}
+
+        \lstinputlisting[linerange={30-35}]{examples/misc.cc}
 
 \subsection{Defining Requirements} \label{sec:defining_requirements}
 
     \subsubsection{Requires Expressions} \label{sec:requires_expressions}
 
+        \lstinputlisting[linerange={150-167}]{examples/concepts.h}
+
+        \subsubsection*{Simple Requirements} \label{sec:simple_requirements}
+
+        \begin{lstlisting}
+template<typename T>
+concept ForwardIterator = requires {
+    T();
+    T{};
+}; \end{lstlisting}
+
+        \subsubsection*{Type Requirements} \label{sec:type_requirements}
+
+        \begin{lstlisting}
+template<typename T>
+concept ForwardIterator = requires {
+    typename std::iterator_traits<T>::value_type;
+    typename std::iterator_traits<T>::difference_type;
+    typename std::iterator_traits<T>::reference;
+    typename std::iterator_traits<T>::pointer;
+    typename std::iterator_traits<T>::iterator_category;
+}; \end{lstlisting}
+
+        \subsubsection*{Compound Requirements} \label{sec:compound_requirements}
+
+        \begin{lstlisting}
+template<typename T>
+concept ForwardIterator = requires(T x) {
+    {  *x } -> typename std::iterator_traits<T>::reference;
+    { ++x } -> T&;
+    { x++ } -> T;
+} && requires(T x, T y) {
+    { std::swap(x, y) } noexcept;
+    { std::swap(y, x) } noexcept;
+}; \end{lstlisting}
+
+        \subsubsection*{Nested Requirements} \label{sec:nested_requirements}
+
+        \lstinputlisting[linerange={189-197}]{examples/concepts.h}
+
 \subsection{Giving Names to Concepts} \label{sec:giving_names_to_concepts}
+
+    \lstinputlisting[linerange={173-178}]{examples/concepts.h}
+
+    \lstinputlisting[linerange={180-182,184-184,186-187}]{examples/concepts.h}
 
     \subsubsection{``Good'' Concepts} \label{sec:good_concepts}

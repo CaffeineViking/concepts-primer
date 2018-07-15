@@ -12,10 +12,12 @@ point2 centroid(const point2* begin,
 }
 
 int main(int, char**) {
+
     point2 points[] { { -1, +1 }, { +1, +1 },
                       { -1, -1 }, { +1, -1 } };
     auto points_size = sizeof(points) / sizeof(point2);
     std::cout << centroid(points, points + points_size)
               << std::endl;
+
     return 0;
 }
