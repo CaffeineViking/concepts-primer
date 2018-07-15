@@ -2,10 +2,10 @@ CXXFLAGS := -std=c++17 -fconcepts -Wall -Wextra -Wpedantic
 LDLIBS   := -lstdc++
 
 all: scratch mean centroid average sfinae factory advance matrix iterators ranges natural zero misc
-gcc-test: check
-	@./checker
 check: checker
 	@./checker
+
+gcc-test: check
 
 checker: checker.o
 checker.o: checker.cc

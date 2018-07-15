@@ -8,6 +8,7 @@
             pdfkeywords={c++, concepts}]{hyperref}
 
 \usepackage{bm}
+\usepackage{textcomp}
 \usepackage{caption}
 \usepackage{listings}
 \usepackage{pdfpages}
@@ -81,36 +82,22 @@ labelfont=bf,singlelinecheck=off,labelsep=space}
 
     \maketitle \begin{spacing}{0.94} \tableofcontents \end{spacing}
 
-    \mbox{} \\ \noindent \textbf{Warning:} the author is neither an expert or a member of the standardization committee; only a fool would take everything that is written here as the truth. However, the author has tried (within his knowledge) to keep this document as accurate as possible. If you, the reader, find any mistakes in this document, please send an e-mail (or even better, create an issue on \href{https://github.com/CaffeineViking/concepts-primer}{\texttt{GitHub}}, and fix it!) \mbox{}  \thispagestyle{empty} \newpage \pagenumbering{arabic}
+    \mbox{} \\ \noindent \textbf{Warning:} the author is neither an expert or a member of the standardization committee; only a fool would take everything that is written here as the truth. However, the author has tried (within his knowledge) to keep this document as accurate as possible. If you, the reader, find any mistakes in this document, please send an e-mail (or even better, create an issue on \href{https://github.com/CaffeineViking/concepts-primer}{GitHub}, and fix it!) \mbox{}  \thispagestyle{empty} \newpage \pagenumbering{arabic}
 
-    \section{Introduction} \label{sec:introduction} \input{sections/introduction.tex}
+    \input{sections/introduction.tex} \newpage
+    \input{sections/generic_programming.tex} \newpage
+    \input{sections/concepts.tex} \newpage
+    \input{sections/terse_syntax.tex} \newpage
+    \label{sec:standard_library_concepts} \input{sections/standard_library_concepts.tex} \newpage
+    \label{sec:summary} \input{sections/summary.tex} \newpage
 
-    \newpage
-
-    \section{Generic Programming} \label{sec:generic_programming} \input{sections/generic_programming.tex}
-
-    \newpage
-
-    \section{Concepts} \label{sec:concepts} \input{sections/concepts.tex}
-
-    \newpage
-
-    \section{Terse Syntax} \label{sec:terse_syntax} \input{sections/terse_syntax.tex}
-
-    \newpage
-
-    \section{Standard Library Concepts} \label{sec:standard_library_concepts} \input{sections/standard_library_concepts.tex}
-
-    \newpage
-
-    \section{Summary} \label{sec:summary} \input{sections/summary.tex}
-
-    \newpage
     \pagenumbering{gobble}
     \nocite{*} % TODO: remove
     \bibliographystyle{alpha}
     \bibliography{primer}
 
     \section*{Acknowledgements} \label{sec:acknowledgements} \input{sections/acknowledgements.tex}
+
+    You may find the short \href{https://github.com/CaffeineViking/concepts-primer}{presentation} for the seminar above, useful as well.
 
 \end{document}

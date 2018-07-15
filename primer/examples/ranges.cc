@@ -20,12 +20,8 @@ int main(int, char**) {
     v = std::move(v) | action::sort | action::unique;
     print_all_elements(v, std::cout);
 
-    auto range_of_v = v | view::remove_if([](int i) {
-                              return i % 2 == 1;
-                          })
-                        | view::transform([](int i) {
-                              return std::to_string(i);
-                          })
+    auto range_of_v = v | view::remove_if([](int i) { return i % 2 == 1; })
+                        | view::transform([](int i) { return std::to_string(i); })
                         | view::take(4);
     print_all_elements(range_of_v, std::cout);
 
