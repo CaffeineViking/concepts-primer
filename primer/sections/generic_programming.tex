@@ -1,10 +1,22 @@
 \section{Generic Programming} \label{sec:generic_programming}
 
+Ever since the humble beginnings of \Cpp\ there's been extensive support for different kinds of \emph{polymorphism}, which can be split into two ``main'' categories: \emph{run-time polymorphism} and \emph{compile-time polymorphism}. The former is a key component in class-based OOP, and takes the form of inheritance, while the latter one enables \emph{generic programming}, and is synonymous with \emph{templates}.
+
+Templates are a bit special in \Cpp\ since they are \emph{unconstrained}. Meaning, when we \emph{instantiate} e.g. function templates, the compiler will first generate the function (that's the instantiation part) by replacing \texttt{T} with whatever type you've passed to the function, and only \underline{after}, check if the syntax is correct! This leads to some very unfortunate side-effects, as you'll see soon enough :)
+
+But before digging into the gritty details on that, let's start with a simple example of ``regular programming'' (i.e. with no templates), which we'll then use to iteratively build a scenario where generic programming will be needed. This will help us understand the though process that goes into designing a generic function, and how \emph{requirements} are gathered by the function's author.
+
+Below is a function that calculates the arithmetic mean by taking in two pointers to a C-style array of \texttt{doubles}, one for the first, and last elements. Notice, that even if we would mangle the names, we would still recognize this as the \texttt{mean}, since the operations (summing elements and dividing by size), would still be familiar to us, since we know what \texttt{\{\}}, \texttt{+=}, \texttt{/} do to \texttt{doubles}.
+
 \lstinputlisting[linerange={3-10}]{examples/mean.cc}
+
+\noindent By using \emph{operator overloading}, we can make our user-defined types behave just like built-in types. This is very powerful, because it allows us to transfer our knowledge about e.g. \texttt{doubles}, and apply it for our own types as well, by using the \underline{\emph{same syntax}} as before. This last part is particularly important!
 
 \lstinputlisting[linerange={6-16}]{examples/point2.hh}
 
 \lstinputlisting[linerange={5-12}]{examples/centroid.cc}
+
+\noindent As can be seen above, providing all those overloads to \texttt{point2} proved fruitful, since we can now represent the algorithm to find the centroid of a cluster of points in a very natural way, quite similarly to how we did the \texttt{mean} function. In fact, this function is \emph{exactly} the same as \texttt{mean}, with the only difference being that the type \texttt{double} $\rightarrow$ \texttt{point2} and that now \texttt{mean} $\rightarrow$ \texttt{centroid}.
 
 \subsection{Unconstrained Templates} \label{sec:unconstrained_templates}
 
