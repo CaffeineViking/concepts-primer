@@ -1,6 +1,6 @@
 \section{Generic Programming} \label{sec:generic_programming}
 
-Ever since the humble beginnings of \Cpp\ there's been extensive support for different kinds of \emph{polymorphism}, which can be split into two ``main'' categories: \emph{run-time polymorphism} and \emph{compile-time polymorphism}. The former is a key component in class-based OOP, and takes the form of inheritance, while the latter one enables \emph{generic programming}, and is synonymous with \emph{templates}.
+Ever since the humble beginnings of \Cpp\ there's been extensive support for different kinds of \emph{polymorphism}, which can be split into two ``main'' categories: \emph{run-time} polymorphism and \emph{compile-time} polymorphism. The former is a key component in class-based OOP, and takes the form of inheritance, while the latter one enables \emph{generic programming}, and is synonymous with \emph{templates}.
 
 Templates are a bit special in \Cpp\ since they are \emph{unconstrained}. Meaning, when we \emph{instantiate} e.g. function templates, the compiler will first generate the function (that's the instantiation part) by replacing \texttt{T} with whatever type you've passed to the function, and only \underline{after}, check if the syntax is correct! This leads to some very unfortunate side-effects, as you'll see soon enough :)
 
@@ -16,20 +16,38 @@ Below is a function that calculates the arithmetic mean by taking in two pointer
 
 \lstinputlisting[linerange={5-12}]{examples/centroid.cc}
 
-\noindent As can be seen above, providing all those overloads to \texttt{point2} proved fruitful, since we can now represent the algorithm to find the centroid of a cluster of points in a very natural way, quite similarly to how we did the \texttt{mean} function. In fact, this function is \emph{exactly} the same as \texttt{mean}, with the only difference being that the type \texttt{double} $\rightarrow$ \texttt{point2} and that now \texttt{mean} $\rightarrow$ \texttt{centroid}.
+
+
+\noindent As can be seen above, providing all those overloads to \texttt{point2} proved fruitful, since we can now represent the algorithm to find the centroid of a cluster of points in a very natural way, quite similarly to how we did the \texttt{mean} function. In fact, this function is \emph{exactly} the same as \texttt{mean}, with the only difference being that the type \texttt{double} $\rightarrow$ \texttt{point2} and that now \texttt{mean} $\rightarrow$ \texttt{centroid}. Surely there must be a way to generalize this type of ``coincidence'' in \Cpp? If you've done any GP at all before, you probably know where this is going!
+
+\vspace{1em}\noindent\textbf{Note:} these are \underline{not} good examples on how you should write these functions, for instance, what happens when \texttt{begin >= end}? And why use pointers? They are written in this way to illustrate an idea, without adding complexity. Many examples in this primer are like this too, so don't use it in production!
 
 \subsection{Unconstrained Templates} \label{sec:unconstrained_templates}
 
     \lstinputlisting[linerange={7-7,11-18}]{examples/average.cc}
 
+    \newpage
+
     \begin{lstlisting}
 std::list l { 5, 1, 2, 4, 3 };
 std::sort(l.begin(), l.end()); \end{lstlisting}
+
+\noindent Spits around 50 lines of template instantiation errors in GCC 8.1. While this is actually pretty tame, and not that hard to figure out what's wrong, it will still scare away a lot of people. The compiler is somewhat helpful, and colors e.g. the \texttt{std::\_\_lg(\_\_last - \_\_first) * 2}, telling us that it can't compile because \texttt{std::\_List\_iterator<int>} doesn't have \texttt{operator-}. However, the most helpful hint is hidden away between those lines, and the true cause is that \texttt{std::list} uses \texttt{ForwardIterators}, and \texttt{std::sort} expects a pair of \texttt{RandomAccessIterators}. Both of these are concepts, and their requirements are defined in the standard library specification. The programmer actually needs to the \underline{read} documentation to locate the problem!
+
+To put a little bit more salt to the wound, consider this simple example:
 
     \begin{lstlisting}
 struct Widget {  };
 std::set<Widget> w;
 w.insert(Widget{}); \end{lstlisting}
+
+\noindent Gives around 412 lines of template instantiation errors. This is still pretty tame in comparison to what some templated libraries output when you make a small mistake, and some of the longer errors even crash terminal emulators. Why can't we just get the same quality of errors as with non-templated code?
+
+There is a reason why compilers can't be more helpful in these situations. As I've mentioned before, unconstrained templates only validate syntax \emph{after} the template has been instantiated, which means it's very hard to track down the source of the problem. Especially if the instantiation error happens far from the ``call site'', resulting in a long \emph{template instantiation stack}. It's so hard in fact, that compilers don't even needed to provide any diagnostics for these problems (according to the standard). Luckily, compilers still try, but the chances for these error messages getting vastly better in future compiler versions are slim, since these problems are equivalent to the \emph{halting problem}.
+
+It seems we've hit a dead-end with unconstrained templates. Maybe we'll just have to endure the pain of using templated code, or consider it a rite of passage for every \Cpp\ programmer that wishes to venture forth. We'll just have to live with fragile template interfaces and unintuitive error messages...
+
+\newpage
 
     \lstinputlisting[linerange={7-18}]{examples/average.cc}
 
