@@ -20,13 +20,17 @@ Below is a function that calculates the arithmetic mean by taking in two pointer
 
 \noindent As can be seen above, providing all those overloads to \texttt{point2} proved fruitful, since we can now represent the algorithm to find the centroid of a cluster of points in a very natural way, quite similarly to how we did the \texttt{mean} function. In fact, this function is \emph{exactly} the same as \texttt{mean}, with the only difference being that the type \texttt{double} $\rightarrow$ \texttt{point2} and that now \texttt{mean} $\rightarrow$ \texttt{centroid}. Surely there must be a way to generalize this type of ``coincidence'' in \Cpp? If you've done any GP at all before, you probably know where this is going!
 
-\vspace{1em}\noindent\textbf{Note:} these are \underline{not} good examples on how you should write these functions, for instance, what happens when \texttt{begin >= end}? And why use pointers? They are written in this way to illustrate an idea, without adding complexity. Many examples in this primer are like this too, so don't use it in production!
+\vspace{1em}\noindent\textbf{Note:} these are \underline{not} good examples on how you should write these functions, for instance, what happens when \texttt{begin >= end}? And why use pointers? Many examples in this primer are like this too, so don't use it in production!
 
 \subsection{Unconstrained Templates} \label{sec:unconstrained_templates}
 
-    \lstinputlisting[linerange={7-7,11-18}]{examples/average.cc}
+    Obviously, both \texttt{mean} and \texttt{centroid} are trying to find an \texttt{average}, which we can express as a higher-level idea with \emph{function templates}, as shown below. We've essentially just swapped \texttt{double}/\texttt{point2} by \texttt{T}, a \emph{template parameter}. These are defined in \emph{template parameter lists}, which have either \emph{type} or \emph{non-type template parameters}. By default, template parameters are \emph{unconstrained}, which means they may take \emph{any} type or value (using non-type parameters).
 
-    \newpage
+    Now, assume you're a user of this function, and wish to use it with your own user-defined type. What are the \emph{requirements} our type needs to \emph{satisfy}? As authors of this function, we know \texttt{T} needs to be \texttt{DefaultConstructible} in line 4, \texttt{Summable} with \texttt{T} in line 7, and \texttt{Scalable} by \texttt{double} in line 8. However, the user doesn't know that, and there's no way to tell by looking at the function signature... Do we have to go and look at the implementation?
+
+    While that might work for this short toy example, it certainly won't scale. A possible solution (adopted by the STL) is to document everything on paper.
+
+    \lstinputlisting[linerange={7-7,11-18}]{examples/average.cc}
 
     \begin{lstlisting}
 std::list l { 5, 1, 2, 4, 3 };
