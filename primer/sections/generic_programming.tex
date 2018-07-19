@@ -32,17 +32,20 @@ Below is a function that calculates the arithmetic mean by taking in two pointer
 
     \lstinputlisting[linerange={7-7,11-18}]{examples/average.cc}
 
+    While writing documentation for the requirements on \texttt{T} certainly works, there is no guarantee the user will read it. And even if the user \emph{does} read it, there is still the possibility he/she will implement the requirements incorrectly. \textbf{Note:} for a ``good'' example on this, see: \emph{Type Requirements} in \href{https://en.cppreference.com/w/cpp/algorithm/sort}{\texttt{std::sort}}.
+
+    Another reasonable alternative, and probably the most common approach, is to implement the requirements iteratively by \emph{trial-and-error}. We just let the compiler try to instantiate the template, and the hope is that the compiler will tell us what requirements are missing, so we can implement them. Even this approach is problematic for the user. For instance, consider this snippet:
+
     \begin{lstlisting}
 std::list l { 5, 1, 2, 4, 3 };
 std::sort(l.begin(), l.end()); \end{lstlisting}
 
-\noindent Spits around 50 lines of template instantiation errors in GCC 8.1. While this is actually pretty tame, and not that hard to figure out what's wrong, it will still scare away a lot of people. The compiler is somewhat helpful, and colors e.g. the \texttt{std::\_\_lg(\_\_last - \_\_first) * 2}, telling us that it can't compile because \texttt{std::\_List\_iterator<int>} doesn't have \texttt{operator-}. However, the most helpful hint is hidden away between those lines, and the true cause is that \texttt{std::list} uses \texttt{ForwardIterators}, and \texttt{std::sort} expects a pair of \texttt{RandomAccessIterators}. Both of these are concepts, and their requirements are defined in the standard library specification. The programmer actually needs to the \underline{read} documentation to locate the problem!
+\noindent Spits around 50 lines of template instantiation errors in GCC 8.1. While this is actually pretty tame, and not that hard to figure out what's wrong, it will still scare away a lot of people. The compiler is somewhat helpful, and colors e.g. the \texttt{std::\_\_lg(\_\_last - \_\_first) * 2}, telling us that it can't compile because \texttt{std::\_List\_iterator<int>} doesn't have \texttt{operator-}. However, the most helpful hint is hidden away between those lines, and the true cause is that \texttt{std::list} uses \texttt{ForwardIterators}, and \texttt{std::sort} expects a pair of \texttt{RandomAccessIterators}. Both of these are concepts, and their requirements are defined in the standard library specification. The programmer needs to the read documentation to locate the problem anyway!
 
 To put a little bit more salt to the wound, consider this simple example:
 
     \begin{lstlisting}
-struct Widget {  };
-std::set<Widget> w;
+std::set<Widget> w; // defined as struct Widget {  }; elsewhere
 w.insert(Widget{}); \end{lstlisting}
 
 \noindent Gives around 412 lines of template instantiation errors. This is still pretty tame in comparison to what some templated libraries output when you make a small mistake, and some of the longer errors even crash terminal emulators. Why can't we just get the same quality of errors as with non-templated code?
@@ -51,9 +54,21 @@ There is a reason why compilers can't be more helpful in these situations. As I'
 
 It seems we've hit a dead-end with unconstrained templates. Maybe we'll just have to endure the pain of using templated code, or consider it a rite of passage for every \Cpp\ programmer that wishes to venture forth. We'll just have to live with fragile template interfaces and unintuitive error messages...
 
-\newpage
+    \subsubsection*{Concepts to the Rescue!}
+
+    Don't fear, concepts is here! Below we have the \texttt{average} from before, with the exception of lines 2-4, which have been squeezed in-between the template parameter list and the function signature. These apply \emph{type constraints} on \texttt{T}, which are just a set of \emph{predicates} that must be \emph{fulfilled} \underline{before} instantiation.
+
+    Without getting boggled down on syntax (we'll have plenty of that later), lines 2-4 say that: we require \texttt{T} to be \texttt{DefaultConstructible}, \texttt{T} must also be \texttt{SummableWith} another \texttt{T}, and \texttt{T} has to be \texttt{ScalableWith} a \texttt{double}. All of these concepts together constrain \texttt{T} to a set of types we want to allow.
 
     \lstinputlisting[linerange={7-18}]{examples/average.cc}
+
+    \noindent Even though that seems pretty neat, what have we gained from doing this? Apart from the extra verboseness, function authors now need to spend  time thinking about the constraints on \texttt{T}, which might seem like ``a waste of time''. After all, it's not like there aren't implicit ``constraints'' already defined in the body of the function: giving a ``bad'' \texttt{T} won't compile, even without concepts. There needs to be a good reason \emph{why} this extra verboseness is needed at all!
+
+    Luckily, this extra verboseness solves a lot of the problems we've described, and easily outweigh the cost of having to write a couple of extra lines of code. Because the constraints on \texttt{T} are checked \emph{before} instantiation occurs, a more reasonable error message can be displayed instead of the ``junk'' we get today. Also, because constraints are part of the function signature, the interface is no longer fragile, and the user can see what concepts they need to implement.
+
+    This completely eliminates the need to document template requirements, because the constraints are explicitly stated in the function signature. Also, the ``trial-and-error'' approach to implementing requirements is no longer unreasonable, because the compiler can now give (more) useful information! Calling \texttt{std::sort} with a \texttt{std::list} will now give something similar to: \emph{``constraints not satisfied: \texttt{std::list::iterator} is not \texttt{RandomAccess}''}, followed by a concise summary of all the requirements you need to implement.
+
+    Also, concepts allow us to overload function templates using constraints. However, we've been able to do that for a while now, by using \emph{type traits} and SFINAE, or even with \emph{tag dispatching}. In fact, both of these are ``competitors'' to concepts, and fill similar niches. Let's have a look at both of these as well!
 
 \subsection{Type Traits and SFINAE} \label{sec:type_traits_and_sfinae}
 
