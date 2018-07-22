@@ -56,8 +56,10 @@ concept Swappable = SwappableWith<T, T>;
 
 template<typename T, typename U>
 concept EqualityComparableWith = requires(T x, U y) {
-    { x == y } -> bool; { x != y } -> bool;
-    { y != x } -> bool; { y == x } -> bool;
+    { x == y } -> bool;
+    { x != y } -> bool;
+    { y != x } -> bool;
+    { y == x } -> bool;
 };
 
 template<typename T>
@@ -198,5 +200,13 @@ concept Allocatable = requires(T x, std::size_t n) {
 
 template<typename T> concept Unsigned = std::is_unsigned_v<T>;
 template<typename T> concept Signed = std::is_signed_v<T>;
+
+// Below are just a  couple of "skeleton" concepts, mainly
+// used in the Zero, Natural, In-Place, Adjective example.
+
+template<typename T>
+concept Sortable  = true;
+template<typename T, typename U, typename V>
+concept Mergeable = true;
 
 #endif
