@@ -16,8 +16,6 @@ Below is a function that calculates the arithmetic mean by taking in two pointer
 
 \lstinputlisting[linerange={5-12}]{examples/centroid.cc}
 
-
-
 \noindent As can be seen above, providing all those overloads to \texttt{point2} proved fruitful, since we can now represent the algorithm to find the centroid of a cluster of points in a very natural way, quite similarly to how we did the \texttt{mean} function. In fact, this function is \emph{exactly} the same as \texttt{mean}, with the only difference being that the type \texttt{double} $\rightarrow$ \texttt{point2} and that now \texttt{mean} $\rightarrow$ \texttt{centroid}. Surely there must be a way to generalize this type of ``coincidence'' in \Cpp? If you've done any GP at all before, you probably know where this is going!
 
 \vspace{1em}\noindent\textbf{Note:} these are \underline{not} good examples on how you should write these functions, for instance, what happens when \texttt{begin >= end}? And why use pointers? Many examples in this primer are like this too, so don't use it in production!
@@ -104,32 +102,44 @@ It seems we've hit a dead-end with unconstrained templates. Maybe we'll just hav
 
     Don't fear, concepts is here! Why do we have to go through all that trouble? In the end, the problem we're trying to solve is simple: for any \texttt{T} and \texttt{U}, check if \texttt{x == y} and \texttt{y == x} are expressions that compile (where \texttt{x} $\in$ \texttt{T}, \texttt{y} $\in$ \texttt{U}). Below we define \texttt{EqualityComparable} by using concepts. Prettier, right?
 
-    Again, without delving too much into the syntax, line 2 defines a concept called \texttt{EqualityComparableWith}, that requires for any \texttt{x} $\in$ \texttt{T} and \texttt{y} $\in$ \texttt{U}: \texttt{x == y}, \texttt{x != y}, \texttt{y != x}, \texttt{y == x} be valid expressions evaluable to \texttt{bool}. e.g. \texttt{EqualityComparableWith<const char*, std::string>} gives \texttt{true}, because \texttt{std::string} has all operators for comparing C-style strings.
+    Again, without delving too much into the syntax, line 2 defines a concept called \texttt{EqualityComparableWith}, that requires for any \texttt{x} $\in$ \texttt{T} and \texttt{y} $\in$ \texttt{U}: \texttt{x == y}, \texttt{x != y}, \texttt{y != x}, \texttt{y == x}, be valid expressions evaluable to \texttt{bool}. e.g. \texttt{EqualityComparableWith<const char*, std::string>} gives \texttt{true}, because \texttt{std::string} has all operators for comparing C-style strings. Note that this is way more powerful than \texttt{is\_equality\_comparable} since it also checks commutativity properties. Something that might be surprising is that it's also non-equality comparable, and is a trend you'll see with ``good'' concept definitions, since they \emph{prefer complete} rather than \emph{minimal} concepts.
+
+    Back in the \texttt{average} example, where we apply constraints via concepts, you might have been wondering how to define e.g. \texttt{DefaultConstructible}. And you'll be pleased to know all of them are really simple to define as well, just like the one below! If you want to take a peek: \texttt{examples/concepts.h}.
 
     \lstinputlisting[linerange={57-63}]{examples/concepts.h}
 
+    \noindent And now for something completely different, but still related to type traits, and more specifically, the many issues with SFINAE. Consider this example: a factory which creates different numbers depending on the constructor that was called. If \texttt{NumberFactory} is called with an integer type, \texttt{create\_number} returns \texttt{42}, but if it's a floating point type, we get e.g. \texttt{0xDEADBEEF} instead.
+
     \lstinputlisting[linerange={8-22}]{examples/factory.hh}
+
+    Sounds simple right? And one would expect the \texttt{NumberFactory} in the previous page to already work, since we're eliminating the ``bad'' constructors with SFINAE, via the \texttt{is\_integral} \& \texttt{is\_floating\_point} type traits. However, that doesn't quite work, because the call will be ambiguous. SFINAE isn't part of overload resolution. As far as the compiler knows, both constructors are exactly the same. How to fix this? We make them different!:
 
     \lstinputlisting[linerange={28-44}]{examples/factory.hh}
 
-    \newpage
+    \noindent Essentially, by introducing a \texttt{dummy} argument, we have changed the signature of the function, which means the compiler no longer considers this ambiguous, and SFINAE can finally take over as usual. While this works, I'd like to argue that this isn't nice, and causes unnecessary headaches for something so simple. Wouldn't it be awesome to not have to think about these edge-cases anymore?
 
     \subsubsection*{Concepts to the Rescue!}
 
-    Don't fear, concepts is here!
+    Don't fear, concepts is here! Since constraints are part of overload resolution, the compiler won't consider these constructors ambiguous anymore. In fact, constraints are part of the function signature! No more edge-cases with this!
 
     \lstinputlisting[linerange={50-62}]{examples/factory.hh}
 
 \subsection{Tag Dispatching} \label{sec:tag_dispatching}
 
-    \emph{Boost's} \href{https://www.boost.org/community/generic_programming.html#tag_dispatching}{Generic Programming Techniques}
+    Another generic programming technique, heavily used in the \Cpp\ standard library, is \emph{tag dispatching} together with \emph{trait classes}. It's a way to choose the function to call/dispatch depending on the properties of a type by using \emph{tags}. A tag is just an empty class (déjà vu?) used to control the function dispatch.
+
+    This is better explained with an example, which I've shamelessly borrowed from \emph{Boost's} excellent \href{https://www.boost.org/community/generic_programming.html#tag_dispatching}{Generic Programming Techniques} survey. If you've played around with \texttt{std::advance} before, you'll know that it's an algorithm which increments an iterator $n$ times, and gives you that ``advanced'' iterator. What you might \emph{not} know, is that there are two versions of it: one which runs in $\mathcal{O}(n)$ time, and another in $\mathcal{O}(1)$ time, depending on the properties of the type that was passed. Which makes sense when you think about it, since a \texttt{ForwardIterator} can only call \texttt{++i} while a \texttt{RandomAccessIterator} can just directly call \texttt{i += n}. It does this by using tag dispatching, like this:
 
     \lstinputlisting[linerange={13-31}]{examples/advance.cc}
+
+    \noindent Notice that \texttt{tagged\_advance} needs an extra argument in the end: the tag, which is used to dispatch the right \texttt{tagged\_advance} from within \texttt{advance}. It does this selection by using \texttt{iterator\_traits<T>::category}, which is a pre-defined type alias for finding out what type of iterator \texttt{T} is. This is quite an elegant approach, but requires us to specify new ``empty'' classes for new iterator types. Worst of all though, we need to provide a specialization inside the \texttt{iterator\_traits} class! Isn't there a better way to solve this?
 
     \lstinputlisting[linerange={36-40}]{examples/advance.cc}
 
     \subsubsection*{Concepts to the Rescue!}
 
-    Don't fear, concepts is here!
+    Don't fear, concepts is here! Instead of having to control dispatch with a tag, how about choosing the correct function overload right from the start? With concepts, this is possible, since we can specify the properties on \texttt{T} explicitly!
 
     \lstinputlisting[linerange={47-50,52-59,61-62}]{examples/advance.cc}
+
+    \noindent At this point, you should be somewhat convinced that concepts are neat, and that existing \Cpp\ language features aren't ``good'' enough for some scenarios. It's finally time to actually start talking about Concepts! I hope you're hyped!
