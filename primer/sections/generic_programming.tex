@@ -72,6 +72,14 @@ It seems we've hit a dead-end with unconstrained templates. Maybe we'll just hav
 
 \subsection{Type Traits and SFINAE} \label{sec:type_traits_and_sfinae}
 
+    Even though this primer is mainly focused on concepts, it would be foolish not to compare it with existing methods that already limit template parameters. One of these are \emph{type traits + SFINAE (Substitution Failure Is Not An Error)}. Despite the scary looking acronym, the idea behind SFINAE is quite simple: ``if replacing \texttt{T} gives invalid syntax, don't emit an error, find alternatives first'', which means we can ``swap'' between overloads depending on these ``failures''.
+
+    And this is where type traits come in handy, since they allow us to ``trigger'' these failures by using them together with \texttt{enable\_if}, a compile-time switch, which evaluates to a non-failing type if the type trait is satisfied. The type traits themselves are just clever constructs that evaluate to \texttt{true} when \texttt{T} has certain properties, e.g. \texttt{is\_integral\_v<int>} gives us \texttt{true}. One of the problems with type traits is that they are not obvious to specify.
+
+    \noindent \textbf{Note:} for a deeper dive see \emph{Bendersky's} \href{https://eli.thegreenplace.net/2014/sfinae-and-enable_if/}{SFINAE and \texttt{enable\_if}} blog post.
+
+    For instance, \texttt{EqualityComparable} from the \Cpp11 standard library:
+
     \begin{table}[h]
     \begin{tabular}{ccc}
         \toprule
@@ -86,20 +94,42 @@ It seems we've hit a dead-end with unconstrained templates. Maybe we'll just hav
     \end{tabular}
     \end{table}
 
+    \noindent Could be defined as the type trait below, which gives \texttt{true} iff \texttt{T} and \texttt{U} have \texttt{operator==(T,U)}. While this wasn't all that complicated in this case, it's still annoying that 87.5\% of this code is just pure boilerplate. It's line 7 that is actually doing the heavy lifting, everything else is just ``unnecessary'' code. Also, if you're very observant, you'll notice that this type trait doesn't even satisfy all of the requirements above, since it doesn't support commutativity.
+
+    Even line 7 isn't obvious, since we need to use \texttt{std::declval} to acquire references to \texttt{T} and \texttt{U} that don't need to go through constructors, so that they can be evaluated with \texttt{decltype}, and finally do what we came to do: check if \texttt{operator==(T,U)} is available. I hope that you will agree that this seems like an awfully roundabout way of doing this. And this is one of the easier type traits to specify, expect extra machinery for anything less trivial.
+
     \lstinputlisting[linerange={6-13}]{examples/sfinae.hh}
 
-    \lstinputlisting[linerange={57-61}]{examples/concepts.h}
+    \subsubsection*{Concepts to the Rescue!}
+
+    Don't fear, concepts is here! Why do we have to go through all that trouble? In the end, the problem we're trying to solve is simple: for any \texttt{T} and \texttt{U}, check if \texttt{x == y} and \texttt{y == x} are expressions that compile (where \texttt{x} $\in$ \texttt{T}, \texttt{y} $\in$ \texttt{U}). Below we define \texttt{EqualityComparable} by using concepts. Prettier, right?
+
+    Again, without delving too much into the syntax, line 2 defines a concept called \texttt{EqualityComparableWith}, that requires for any \texttt{x} $\in$ \texttt{T} and \texttt{y} $\in$ \texttt{U}: \texttt{x == y}, \texttt{x != y}, \texttt{y != x}, \texttt{y == x} be valid expressions evaluable to \texttt{bool}. e.g. \texttt{EqualityComparableWith<const char*, std::string>} gives \texttt{true}, because \texttt{std::string} has all operators for comparing C-style strings.
+
+    \lstinputlisting[linerange={57-63}]{examples/concepts.h}
 
     \lstinputlisting[linerange={8-22}]{examples/factory.hh}
 
     \lstinputlisting[linerange={28-44}]{examples/factory.hh}
 
+    \newpage
+
+    \subsubsection*{Concepts to the Rescue!}
+
+    Don't fear, concepts is here!
+
     \lstinputlisting[linerange={50-62}]{examples/factory.hh}
 
 \subsection{Tag Dispatching} \label{sec:tag_dispatching}
 
+    \emph{Boost's} \href{https://www.boost.org/community/generic_programming.html#tag_dispatching}{Generic Programming Techniques}
+
     \lstinputlisting[linerange={13-31}]{examples/advance.cc}
 
     \lstinputlisting[linerange={36-40}]{examples/advance.cc}
+
+    \subsubsection*{Concepts to the Rescue!}
+
+    Don't fear, concepts is here!
 
     \lstinputlisting[linerange={47-50,52-59,61-62}]{examples/advance.cc}
