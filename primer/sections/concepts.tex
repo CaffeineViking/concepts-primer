@@ -1,5 +1,7 @@
 \section{Concepts} \label{sec:concepts}
 
+\newpage
+
 \subsection{Applying Constraints} \label{sec:applying_constraints}
 
     \subsubsection{Requires Clauses} \label{sec:requires_clauses}
@@ -17,11 +19,25 @@
 
         \lstinputlisting[linerange={42-52}]{examples/misc.cc}
 
+        \newpage
+
     \subsubsection{Overload Resolution} \label{sec:overload_resolution}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/overloading.eps}
+        \end{figure}
 
         \lstinputlisting[linerange={47-50,52-59,61-62}]{examples/advance.cc}
 
+        \newpage
+
     \subsubsection{Logical Operations} \label{sec:logical_operations}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.7\textwidth]{figures/logical_operations.eps}
+        \end{figure}
 
         \subsubsection*{Conjunctions} \label{sec:conjunctions}
 
@@ -30,6 +46,8 @@
         \subsubsection*{Disjunctions} \label{sec:disjunctions}
 
         \lstinputlisting[linerange={15-22}]{examples/misc.cc}
+
+        \newpage
 
 \subsection{Defining Requirements} \label{sec:defining_requirements}
 
@@ -74,6 +92,8 @@ concept ForwardIterator = requires(T x) {
         \subsubsection*{Nested Requirements} \label{sec:nested_requirements}
 
         \lstinputlisting[linerange={191-199}]{examples/concepts.h}
+
+        \newpage
 
 \subsection{Giving Names to Concepts} \label{sec:giving_names_to_concepts}
 

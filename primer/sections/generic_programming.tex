@@ -46,7 +46,7 @@ To put a little bit more salt to the wound, consider this simple example:
 std::set<Widget> w; // defined as struct Widget {  }; elsewhere
 w.insert(Widget{}); \end{lstlisting}
 
-\noindent Gives around 412 lines of template instantiation errors. This is still pretty tame in comparison to what some templated libraries output when you make a small mistake, and some of the longer errors even crash terminal emulators. Why can't we just get the same quality of errors as with non-templated code?
+\noindent Gives around 412 lines of template instantiation errors. This is still pretty tame in comparison to what some templated libraries output when you make a small mistake, and some of the longer errors even crash terminal emulators! Why can't we just get the same quality of errors as with non-templated code?
 
 There is a reason why compilers can't be more helpful in these situations. As I've mentioned before, unconstrained templates only validate syntax \emph{after} the template has been instantiated, which means it's very hard to track down the source of the problem. Especially if the instantiation error happens far from the ``call site'', resulting in a long \emph{template instantiation stack}. It's so hard in fact, that compilers don't even needed to provide any diagnostics for these problems (according to the standard). Luckily, compilers still try, but the chances for these error messages getting vastly better in future compiler versions are slim, since these problems are equivalent to the \emph{halting problem}.
 
@@ -92,7 +92,7 @@ It seems we've hit a dead-end with unconstrained templates. Maybe we'll just hav
     \end{tabular}
     \end{table}
 
-    \noindent Could be defined as the type trait below, which gives \texttt{true} iff \texttt{T} and \texttt{U} have \texttt{operator==(T,U)}. While this wasn't all that complicated in this case, it's still annoying that 87.5\% of this code is just pure boilerplate. It's line 7 that is actually doing the heavy lifting, everything else is just ``unnecessary'' code. Also, if you're very observant, you'll notice that this type trait doesn't even satisfy all of the requirements above, since it doesn't support commutativity.
+    \noindent could be defined as the type trait below, which gives \texttt{true} iff \texttt{T} and \texttt{U} have \texttt{operator==(T,U)}. While this wasn't all that complicated in this case, it's still annoying that 87.5\% of this code is just pure boilerplate. It's line 7 that is actually doing the heavy lifting, everything else is just ``unnecessary'' code. Also, if you're very observant, you'll notice that this type trait doesn't even satisfy all of the requirements above, since it doesn't support commutativity.
 
     Even line 7 isn't obvious, since we need to use \texttt{std::declval} to acquire references to \texttt{T} and \texttt{U} that don't need to go through constructors, so that they can be evaluated with \texttt{decltype}, and finally do what we came to do: check if \texttt{operator==(T,U)} is available. I hope that you will agree that this seems like an awfully roundabout way of doing this. And this is one of the easier type traits to specify, expect extra machinery for anything less trivial.
 
@@ -120,7 +120,7 @@ It seems we've hit a dead-end with unconstrained templates. Maybe we'll just hav
 
     \subsubsection*{Concepts to the Rescue!}
 
-    Don't fear, concepts is here! Since constraints are part of overload resolution, the compiler won't consider these constructors ambiguous anymore. In fact, constraints are part of the function signature! No more edge-cases with this!
+    Don't fear, concepts is here! Since constraints are part of overload resolution, the compiler won't consider these constructors ambiguous anymore. In fact, constraints are part of the function's signature! No more edge-cases with this!
 
     \lstinputlisting[linerange={50-62}]{examples/factory.hh}
 

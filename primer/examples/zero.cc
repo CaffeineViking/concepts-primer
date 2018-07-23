@@ -34,7 +34,7 @@ int main(int, char**) {
 
 #if false
 
-// No way to do this within Concepts Zero!
+// No way to do this with verbose syntax!
 
 #endif
 
