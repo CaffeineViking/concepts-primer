@@ -19,7 +19,7 @@ Documents
 Typesetting
 -----------
 
-Both the primer and the slides are typeset with *LaTeX*, and are available as PDFs in the section above, but if if you still want to typeset the latest version for some reason, here is how to do it (in *TeXLive*): go into `primer` or `slides`, and call `make` :)
+Both the primer and the slides are typeset with *LaTeX*, and are available as PDFs in the section above, but if if you still want to typeset the latest version for some reason, here is how to do it (in *TeXLive*): go into `primer` or `slides`, and then call `make`.
 
 Examples
 --------
