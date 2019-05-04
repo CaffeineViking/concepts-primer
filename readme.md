@@ -1,8 +1,6 @@
 A C++ Concepts Primer
 =====================
 
-by **Erik Sven Vasconcelos Jansson** in late-2018.
-
 Introduction
 ------------
 
