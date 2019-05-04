@@ -14,7 +14,7 @@ Documents
 ---------
 
 * **[Primer (pdf)](primer/primer.pdf):** the primer itself, which consists of a short overview of *generic programming* in a  pre-concepts world, the problems with using *unconstrained template parameters*, what methods we currently have (e.g. *type traits and SFINAE*) for solving these or similar problems, and why they are *insufficient*. We then present *Concepts*, which are a method to *constrain template parameters* by using `requires` *clauses* and  `requires` *expressions*. The primer also covers *standard library concepts*, their use in the *ranges* proposal, and their different *terse syntax* proposed for C++20 (which is more a historical curiosity nowadays, since the syntax has already been selected now). **Warning!** This is still **work in progress**!
-* **[Slides (pdf)](slides/slides.pdf):** essentially the same information as the above, but condensed, and not as good. Good for a quick read.
+* **[Slides (pdf)](slides/slides.pdf):** essentially the same information as the above, but condensed, and not as good. Good for a quick read :).
 
 Typesetting
 -----------
