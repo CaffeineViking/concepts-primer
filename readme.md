@@ -1,6 +1,8 @@
 A C++ Concepts Primer
 =====================
 
+<p align="center"><img src="/primer/figures/screenshots.png" alt="C++ Concepts Primer"/></p> 
+
 Introduction
 ------------
 
