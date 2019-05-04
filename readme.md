@@ -3,10 +3,10 @@ A C++ Concepts Primer
 
 by **Erik Sven Vasconcelos Jansson** in late-2018.
 
-Abstract
---------
+Introduction
+------------
 
-Right now C++ is experiencing a *renaissance*, fueled by new language features and an extended standard library introduced with C++11, C++14, and C++17. It is a different beast than C++98 (want to feel really old? that's ~two decades ago!), while still keeping to its core philosophies: the *zero-overhead principle*, having a *simple and direct mapping to hardware*, and to be completely *multi-paradigm*. The language has become more powerful, but also simpler, since many of the "rough edges" in C++98 have been removed and replaced with more modern variants, that are safer and more general to use. Interest in the C++ programming language has surged again, and with C++20 coming soon™, doubly so.
+Right now C++ is experiencing a *renaissance*, fueled by new language features and an extended standard library introduced with C++11, C++14, and C++17. It is a different beast than C++98 (want to feel really old? that's ~two decades ago!), while still keeping to its core philosophies: the *zero-overhead principle*, having a *simple and direct mapping to hardware*, and to be completely *multi-paradigm*. The language has become more powerful, but also simpler, since many of the "rough edges" in C++98 have been removed and replaced with more modern variants, that are safer and more general to use. Interest in the C++ programming language has surged again, and with C++20 coming soon™ doubly so. Concepts will be in C++20 folks!
 
 In this primer we'll be looking at *concepts*, a way to *constrain templates*, which lead to: *less verbose template errors*, a way to *overload functions based on constraints*, and more *explicitly defined function template interfaces* by using requirements. This primer will teach you how to *apply constraints* to template parameters by using the *requires clause*, and how to *define* your own set of *requirements* by using the many forms of *requires expression*. You'll then see that we can compose requirements together to form useful *concepts*, which can be used together with *terse syntax* to write safe and less verbose generic code.
 
