@@ -24,7 +24,7 @@ Both the primer and the slides are typeset with *LaTeX*, and are available as PD
 Examples
 --------
 
-Almost all examples in the primer should be runnable after doing the hack in `concepts.h`. In fact, I would recommend you to just import `concepts.h` if you want to play around with concepts. The only examples that aren't runnable, are those that use the more novel *terse syntaxes* (i.e. *concepts in-place syntax* and the *adjective syntax*). The *natural syntax* as in the TS should work fine. You can compile all examples in the primer by going to `primer/listings` and calling `make`. Since code in the primer is taken directly from these listings, everything you see in the primer is syntactically correct (not terse syntax).
+Almost all examples in the primer should be runnable after doing the hack in `concepts.h`. In fact, I would recommend you to just import `concepts.h` if you want to play around with concepts. The only examples that aren't runnable, are those that use the more novel *terse syntaxes* (i.e. *concepts in-place syntax* and the *adjective syntax*). The *natural syntax* as in the TS:es should work fine. You can compile all examples in the primer by going to `primer/listings` and calling `make`. Since snippets in the primer is taken directly from these listings, everything you see in the primer is syntactically correct as they can be built/run.
 
 Acknowledgements
 ----------------
